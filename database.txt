@@ -1,118 +1,59 @@
 1 NoSQL
-	likes(idlike, idsong, iduser)
-	comments(idcomment, idsong, iduser, comment, commentdate)
-
-2 HIVE
-	profiles(iduser, name, surname, birthday, gender, email, pass)
-
-3 HDFS
-	songs(idsong, namefile, idartist, title, year)
-
-4 SQL
+	likes(idlike, idsong, email)
+	comments(idcomment, idsong, email, comment, commentdate)
 	genres(idgenre, title)
 	artists(idartist, name)
 	albums(idalbum, title)
 	songs(idsong, idalbum, idgenre)
 	atoa(idatoa, idartist, idalbum)
-	externaltable
+	recommend(idrecommend, email, idsong)
 
+2 HIVE
+	profiles(email, name, surname, birthday, gender, pass)
+
+3 HDFS
+	songs(idsong, namefile, idartist, title, year)
+
+4 SQL
+	external tables
 
 
 beeline
 
 !connect jdbc:hive2://localhost:10000
-create table profiles(iduser int, name string, surname string, birthday string, gender int, email string, pass string, group string)
+oracle
+welcome1
+create table profiles(email string, name string, surname string, birthday string, gender int, pass string, group string);
+!quit
 
 java -Xmx256m -Xms256m -jar $KVHOME/lib/kvstore.jar kvlite
 java -jar $KVHOME/lib/kvstore.jar runadmin -port 5000 -host bigdatalite.localdomain
 
 connect store -name kvstore
-execute 'Create table likes(idlike integer, idsong string, iduser integer, primary key(idlike))'
-execute 'Create table comments(idcomment integer, idsong string, iduser integer, comment string, commentdate string, primary key(idcomment))'
+execute 'Create table likes(idlike integer, idsong string, email string, primary key(idlike))'
+execute 'Create table comments(idcomment integer, idsong string, email string, body string, commentdate string, primary key(idcomment))'
+execute 'CREATE TABLE genres(idgenre integer, title string, primary key(idgenre))'
+execute 'CREATE TABLE artists(idartist integer, name string, primary key(idartist))'
+execute 'CREATE TABLE albums(idalbum integer, title string, primary key(idalbum))'
+execute 'CREATE TABLE songs(idsong integer, idalbum integer, idgenre integer, primary key(idsong))'
+execute 'CREATE TABLE atoa(idatoa integer, idartist integer, idalbum integer, primary key(idatoa))'
 
 hdfs dfs -mkdir /music
 hdfs dfs -put songs.txt /music
+hdfs dfs -ls /music
 
-CREATE TABLE genres(
-	idgenre int primary key,
-	title varchar2(255)
-)
+-- SQL
+sqlplus / as sysdba
 
-CREATE TABLE artists(
-	idartist int primary key,
-	name varchar2(255)
-)
+startup
+connect system/welcome1
 
-CREATE TABLE albums(
-	idalbum int primary key,
-	title varchar2(255)
-)
-
-CREATE TABLE songs(
-	idsong int primary key,
-	idalbum int,
-	idgenre int,
-	FOREIGN KEY (idalbum) REFERENCES albums(idalbum),
-	FOREIGN KEY (idgenre) REFERENCES genres(idgenre)
-)
-
-create tabe atoa(
-	idatoa int primary key,
-	idartist int,
-	idalbum int,
-	FOREIGN KEY (idartist) REFERENCES artists(idartist),
-	FOREIGN KEY (idalbum) REFERENCES albums(idalbum)
-)
-
-CREATE SEQUENCE genreseq START WITH 0 MINVALUE 0 INCREMENT BY 1;
-CREATE SEQUENCE artistseq START WITH 0 MINVALUE 0 INCREMENT BY 1;
-CREATE SEQUENCE albumseq START WITH 0 MINVALUE 0 INCREMENT BY 1;
-CREATE SEQUENCE songseq START WITH 0 MINVALUE 0 INCREMENT BY 1;
-CREATE SEQUENCE atoaseq START WITH 0 MINVALUE 0 INCREMENT BY 1;
-
-CREATE OR REPLACE TRIGGER genretr
-BEFORE INSERT ON genres
-FOR EACH ROW
-BEGIN
-  SELECT genreseq.NEXTVAL INTO :new.idgenre FROM dual;
-END;
-
-CREATE OR REPLACE TRIGGER artisttr
-BEFORE INSERT ON artists
-FOR EACH ROW
-BEGIN
-  SELECT artistseq.NEXTVAL INTO :new.idartist FROM dual;
-END;
-
-CREATE OR REPLACE TRIGGER albumtr
-BEFORE INSERT ON albums
-FOR EACH ROW
-BEGIN
-  SELECT albumseq.NEXTVAL INTO :new.idalbum FROM dual;
-END;
-
-CREATE OR REPLACE TRIGGER songtr
-BEFORE INSERT ON songs
-FOR EACH ROW
-BEGIN
-  SELECT songseq.NEXTVAL INTO :new.idsong FROM dual;
-END;
-
-CREATE OR REPLACE TRIGGER atoatr
-BEFORE INSERT ON atoa
-FOR EACH ROW
-BEGIN
-  SELECT atoaseq.NEXTVAL INTO :new.idatoa FROM dual;
-END;
-
---HIVE
 CREATE TABLE profiles_ext (
-	iduser number(8),
+	email varchar2(255),
 	name varchar2(40),
 	surname varchar2(40),
 	birthday varchar2(10),
 	gender number(1),
-	email varchar2(12),
 	pass varchar2(255)
 )
 ORGANIZATION EXTERNAL (
@@ -125,12 +66,10 @@ ORGANIZATION EXTERNAL (
 )
 REJECT LIMIT UNLIMITED;
 
---HDFS
---idsong, namefile, idartist, title, year
 CREATE TABLE songs_hadoop_ext (
 	idsong varchar2(255),
 	namefile varchar2(255),
-	idartist number(8),
+	idartist int,
 	title varchar2(255),
 	year number(4)
 )
@@ -144,4 +83,10 @@ ORGANIZATION EXTERNAL (
 		ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
 	)
 	LOCATION ('hdfs:/music/songs.txt')
-)
+);
+
+exit
+
+lsnrctl
+start
+exit
