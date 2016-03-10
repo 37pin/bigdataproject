@@ -1,45 +1,128 @@
-1 NoSQL
+NoSQL
 	likes(idlike, idsong, email)
-	comments(idcomment, idsong, email, comment, commentdate)
+	comments(idcomment, idsong, email, commentbody, commentdate)
 	genres(idgenre, title)
 	artists(idartist, name)
 	albums(idalbum, title)
 	songs(idsong, idalbum, idgenre)
 	atoa(idatoa, idartist, idalbum)
-	recommend(idrecommend, email, idsong)
+	email : idsong
 
-2 HIVE
+HIVE
 	profiles(email, name, surname, birthday, gender, pass)
-
-3 HDFS
-	songs(idsong, namefile, idartist, title, year)
-
-4 SQL
 	external tables
 
+HDFS
+	songsdesc(idsong, namefile, title, year)
 
+SQL
+	external tables
+
+-- HIVE
 beeline
 
 !connect jdbc:hive2://localhost:10000
 oracle
 welcome1
 create table profiles(email string, name string, surname string, birthday string, gender int, pass string, group string);
+
+create external table likes_nosql(
+	idlike int,
+	idsong string, 
+	email string)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "likes");
+
+create external table comments_nosql(
+	idcomment int,
+	idsong string, 
+	email string,
+	commentbody string,
+	commentdate string)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "comments");
+
+create external table genres_nosql(
+	idgenre int,
+	title string)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "genres");
+
+create external table artists_nosql(
+	idartist int,
+	name string)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "artists");
+
+create external table albums_nosql(
+	idalbum int,
+	title string)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "albums");
+
+create external table songs_nosql(
+	idsong string,
+	idalbum int, 
+	idgenre int)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "songs");
+
+create external table atoa_nosql(
+	idatoa int,
+	idartist int, 
+	idalbum int)
+stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+tblproperties 
+("oracle.kv.kvstore" = "kvstore", 
+"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
+"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
+"oracle.kv.tablename" = "atoa");
+
 !quit
 
+-- NoSQL
 java -Xmx256m -Xms256m -jar $KVHOME/lib/kvstore.jar kvlite
 java -jar $KVHOME/lib/kvstore.jar runadmin -port 5000 -host bigdatalite.localdomain
 
 connect store -name kvstore
-execute 'Create table likes(idlike integer, idsong string, email string, primary key(idlike))'
-execute 'Create table comments(idcomment integer, idsong string, email string, body string, commentdate string, primary key(idcomment))'
-execute 'CREATE TABLE genres(idgenre integer, title string, primary key(idgenre))'
-execute 'CREATE TABLE artists(idartist integer, name string, primary key(idartist))'
-execute 'CREATE TABLE albums(idalbum integer, title string, primary key(idalbum))'
-execute 'CREATE TABLE songs(idsong integer, idalbum integer, idgenre integer, primary key(idsong))'
-execute 'CREATE TABLE atoa(idatoa integer, idartist integer, idalbum integer, primary key(idatoa))'
+execute 'create table likes(idlike integer, idsong string, email string, primary key(idlike))'
+execute 'create table comments(idcomment integer, idsong string, email string, commentbody string, commentdate string, primary key(idcomment))'
+execute 'create table genres(idgenre integer, title string, primary key(idgenre))'
+execute 'create table artists(idartist integer, name string, primary key(idartist))'
+execute 'create table albums(idalbum integer, title string, primary key(idalbum))'
+execute 'create table songs(idsong string, idalbum integer, idgenre integer, primary key(idsong))'
+execute 'create table atoa(idatoa integer, idartist integer, idalbum integer, primary key(idatoa))'
+
+put kv -key /test@test.test -value "AAAAAB"
+get kv -key /test@test.test
+delete kv -key /test@test.test
 
 hdfs dfs -mkdir /music
-hdfs dfs -put songs.txt /music
+hdfs dfs -put songsdesc.txt /music
 hdfs dfs -ls /music
 
 -- SQL
@@ -48,7 +131,7 @@ sqlplus / as sysdba
 startup
 connect system/welcome1
 
-CREATE TABLE profiles_ext (
+CREATE TABLE profiles_hive (
 	email varchar2(255),
 	name varchar2(40),
 	surname varchar2(40),
@@ -66,7 +149,111 @@ ORGANIZATION EXTERNAL (
 )
 REJECT LIMIT UNLIMITED;
 
-CREATE TABLE songs_hadoop_ext (
+CREATE TABLE likes_hive (
+	idlike int,
+	idsong varchar2(255),
+	email varchar2(255)
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.likes_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE comments_hive (
+	idcomment int,
+	idsong varchar2(255),
+	email varchar2(255),
+	commentbody varchar2(255),
+	commentdate varchar2(255)
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.comments_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE genres_hive (
+	idgenre int,
+	title varchar2(255)
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.genres_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE artists_hive (
+	idartist int,
+	name varchar2(255)
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.artists_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE albums_hive (
+	idalbum int,
+	title varchar2(255)
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.albums_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE songs_hive (
+	idsong varchar2(255),
+	idalbum int,
+	idgenre int
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.songs_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE atoa_hive (
+	atoa int,
+	idartist int,
+	idalbum int
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.atoa_nosql
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE songsdesc_ext (
 	idsong varchar2(255),
 	namefile varchar2(255),
 	idartist int,
@@ -82,7 +269,7 @@ ORGANIZATION EXTERNAL (
 		com.oracle.bigdata.erroropt:{"action":"setnull"}
 		ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
 	)
-	LOCATION ('hdfs:/music/songs.txt')
+	LOCATION ('hdfs:/music/songsdesc.txt')
 );
 
 exit
