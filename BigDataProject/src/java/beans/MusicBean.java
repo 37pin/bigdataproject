@@ -17,7 +17,6 @@ public class MusicBean implements Serializable {
     private static final String IP = "10.154.101.249";
     private String songFile;
     private DataModel songs = null;
-    private SongDesc currentSong;
     private List<SongDesc> db = new ArrayList<>(Arrays.asList(new SongDesc("111", "Aint_No_Love_-_01_-_Gone_Already.mp3", "gone", 2016)));
 
     public MusicBean() {
@@ -46,16 +45,8 @@ public class MusicBean implements Serializable {
         return IP;
     }
     
-    public void changeMusic() {
-        songFile = currentSong.getFileName();
-    }
-
-    public SongDesc getCurrentSong() {
-        return currentSong;
-    }
-
-    public void setCurrentSong(SongDesc currentSong) {
-        this.currentSong = currentSong;
+    public void changeMusic(String songFile) {
+        this.songFile = songFile;
     }
     
 }

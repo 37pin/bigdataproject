@@ -6,12 +6,14 @@
         <title>Music</title>
     </h:head>
     <h:body>
-        <audio controls="controls" src="http://#{musicBean.IP}:50075/webhdfs/v1/music/#{musicBean.songFile}?op=OPEN&amp;namenoderpcaddress=bigdatalite.localdomain:8020"/>
-        <h:dataTable value="#{musicBean.songs}" var="item" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
-            <h:column>
-                <h:commandLink action="#{musicBean.changeMusic()}" value="#{musicBean.currentSong}"/>
-            </h:column>
-        </h:dataTable>
+        <h:form>
+            <audio controls="controls" src="http://#{musicBean.IP}:50075/webhdfs/v1/music/#{musicBean.songFile}?op=OPEN&amp;namenoderpcaddress=bigdatalite.localdomain:8020"/>
+            <h:dataTable value="#{musicBean.songs}" var="song" border="0" cellpadding="2" cellspacing="0" rules="all" style="border:solid 1px">
+                <h:column>
+                    <h:commandLink action="#{musicBean.changeMusic(song.fileName)}" value="#{song.title}"/>
+                </h:column>
+            </h:dataTable>
+        </h:form>
     </h:body>
 </html>
 

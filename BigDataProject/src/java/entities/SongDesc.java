@@ -2,13 +2,13 @@ package entities;
 
 public class SongDesc {
     private String id;
-    private String fileName;
+    private String songFile;
     private String title;
     private int year;
     
-    public SongDesc(String id, String fileName, String title, int year) {
+    public SongDesc(String id, String songFile, String title, int year) {
         this.id = id;
-        this.fileName = fileName;
+        this.songFile = songFile;
         this.title = title;
         this.year = year;
     }
@@ -22,11 +22,11 @@ public class SongDesc {
     }
 
     public String getFileName() {
-        return fileName;
+        return songFile;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFileName(String songFile) {
+        this.songFile = songFile;
     }
 
     public String getTitle() {
