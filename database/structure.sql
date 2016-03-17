@@ -43,7 +43,10 @@ beeline
 !connect jdbc:hive2://localhost:10000
 oracle
 welcome1
-create table profiles(email string, name string, surname string, birthday string, gender int, pass string, group string);
+create table profiles(email string, name string, surname string, birthday string, gender int, pass string);
+
+create table groups(idgroup int, title string);
+create table ptog(email string, idgroup string);
 
 create external table likes_nosql (
 	email string,
@@ -144,8 +147,7 @@ CREATE TABLE profiles_hive (
 	surname varchar2(40),
 	birthday varchar2(10),
 	gender number(1),
-	pass varchar2(255),
-	group varchar2(255)
+	pass varchar2(255)
 )
 ORGANIZATION EXTERNAL (
 	TYPE ORACLE_HIVE
@@ -153,6 +155,34 @@ ORGANIZATION EXTERNAL (
 	ACCESS PARAMETERS
 	(
 		com.oracle.bigdata.tablename=default.profiles
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE groups_hive (
+	idgroup int,
+	title varchar2(255)
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.groups
+	)
+)
+REJECT LIMIT UNLIMITED;
+
+CREATE TABLE ptog_hive (
+	email varchar2(255),
+	idgroup int
+)
+ORGANIZATION EXTERNAL (
+	TYPE ORACLE_HIVE
+	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.ptog
 	)
 )
 REJECT LIMIT UNLIMITED;

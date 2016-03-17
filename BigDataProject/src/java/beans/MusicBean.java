@@ -11,14 +11,14 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class MusicBean implements Serializable {
 
-    private String songFile = "null";
+    private String songFile;
     private List<SongDesc> songs = null;
     private SongDescDao songDescDao;
-    private String test;
+    private String songText;
 
     public MusicBean() {
         songDescDao = new SongDescDao();
-        test = songDescDao.loadData();
+        songs = songDescDao.getAll();
     }
     
     public String getSongFile() {
@@ -37,20 +37,17 @@ public class MusicBean implements Serializable {
         this.songs = songs;
     }
 
-    public String getTest() {
-        return test;
+    public String getSongText() {
+        return songText;
     }
 
-    public void setTest(String test) {
-        this.test = test;
+    public void setSongText(String songText) {
+        this.songText = songText;
     }
     
-    public String getIP() {
-        return SongDescDao.IP;
-    }
-    
-    public void changeMusic(String songFile) {
-        this.songFile = songFile;
+    public void changeMusic(SongDesc songDesc) {
+        songFile = songDesc.getFileName();
+        songText = songDesc.getTitle() + ", " + songDesc.getYear();
     }
     
 }
