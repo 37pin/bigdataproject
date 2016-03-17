@@ -1,25 +1,24 @@
 package beans;
 
+import dao.SongDescDao;
 import java.io.Serializable;
 import entities.SongDesc;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.model.DataModel;
-import javax.faces.model.ListDataModel;
  
 @ManagedBean(name = "musicBean")
 @SessionScoped
 public class MusicBean implements Serializable {
 
-    private static final String IP = "10.154.101.249";
-    private String songFile;
-    private DataModel songs = null;
-    private List<SongDesc> db = new ArrayList<>(Arrays.asList(new SongDesc("111", "Aint_No_Love_-_01_-_Gone_Already.mp3", "gone", 2016)));
+    private String songFile = "null";
+    private List<SongDesc> songs = null;
+    private SongDescDao songDescDao;
+    private String test;
 
     public MusicBean() {
+        songDescDao = new SongDescDao();
+        test = songDescDao.loadData();
     }
     
     public String getSongFile() {
@@ -30,19 +29,24 @@ public class MusicBean implements Serializable {
         this.songFile = songFile;
     }
 
-    public DataModel getSongs() {
-        if (songs == null) {
-            songs = new ListDataModel(db);
-        }
+    public List<SongDesc> getSongs() {
         return songs;
     }
 
-    public void setSongs(DataModel songs) {
+    public void setSongs(List<SongDesc> songs) {
         this.songs = songs;
+    }
+
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
     }
     
     public String getIP() {
-        return IP;
+        return SongDescDao.IP;
     }
     
     public void changeMusic(String songFile) {
