@@ -48,6 +48,13 @@ put table -name comments -json '{"idcomment":," idsong":"", "email":"", "comment
 put table -name genres -json '{"idgenre":1, "title":"RnB"}'
 put table -name genres -json '{"idgenre":2, "title":"Rock"}'
 put table -name genres -json '{"idgenre":3, "title":"Rap"}'
+put table -name genres -json '{"idgenre":4, "title":"Hip-Hop"}'
+put table -name genres -json '{"idgenre":5, "title":"Classic"}'
+put table -name genres -json '{"idgenre":6, "title":"Jazz"}'
+put table -name genres -json '{"idgenre":7, "title":"Pop"}'
+put table -name genres -json '{"idgenre":8, "title":"
+Electonic music"}'
+
 
 put table -name artists -json '{"idartist":, "name":""}'
 
