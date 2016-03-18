@@ -10,6 +10,8 @@ NoSQL
 
 HIVE
 	profiles(email, name, surname, birthday, gender, pass)
+	groups(idgroup, title)
+    ptog(email, idgroup)
 	external tables
 
 HDFS
@@ -36,6 +38,73 @@ execute 'create table artists(idartist integer, name string, primary key(idartis
 execute 'create table albums(idalbum integer, title string, primary key(idalbum))'
 execute 'create table songs(idsong string, idalbum integer, idgenre integer, primary key(idsong))'
 execute 'create table atoa(idartist integer, idalbum integer, primary key(idartist, idalbum))'
+
+put table -name likes -json '{"email":"", "idsong":""}'
+
+put table -name recommends -json '{"email":"", "idsong":""}'
+
+put table -name comments -json '{"idcomment":," idsong":"", "email":"", "commentbody":"", "commentdate":""}'
+
+put table -name genres -json '{"idgenre":1, "title":"RnB"}'
+put table -name genres -json '{"idgenre":2, "title":"Rock"}'
+put table -name genres -json '{"idgenre":3, "title":"Rap"}'
+
+put table -name artists -json '{"idartist":, "name":""}'
+
+put table -name albums -json '{"idalbum":, "title":""}'
+
+put table -name songs -json '{"idsong":"70GKB82HGS", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+put table -name songs -json '{"idsong":"", "idalbum":, "idgenre":}'
+
+put table -name atoa -json '{"idartist":, "idalbum":}'
 
 -- HIVE
 beeline
@@ -320,7 +389,7 @@ ORGANIZATION EXTERNAL (
 		com.oracle.bigdata.erroropt:{"action":"setnull"}
 		ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
 	)
-	LOCATION ('hdfs:/music/songsdesc.txt')
+	LOCATION ('hdfs:/music/songsdesc.csv')
 );
 
 exit

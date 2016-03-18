@@ -1,4 +1,4 @@
-package entities;
+package entities.hdfs;
 
 public class SongDesc {
     private String id;

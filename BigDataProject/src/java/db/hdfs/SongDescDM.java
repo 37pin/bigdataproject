@@ -1,6 +1,6 @@
-package dao;
+package db.hdfs;
 
-import entities.SongDesc;
+import entities.hdfs.SongDesc;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -10,7 +10,9 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-public class SongDescDao {
+public class SongDescDM {
+    
+    public static final String IP = "10.154.101.248";
     
     public List<SongDesc> getAll() {
         List<SongDesc> allSongDescs = new ArrayList<>();

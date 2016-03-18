@@ -1,8 +1,8 @@
 package beans;
 
-import dao.SongDescDao;
+import db.hdfs.SongDescDM;
 import java.io.Serializable;
-import entities.SongDesc;
+import entities.hdfs.SongDesc;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -13,12 +13,12 @@ public class MusicBean implements Serializable {
 
     private String songFile;
     private List<SongDesc> songs = null;
-    private SongDescDao songDescDao;
+    private SongDescDM songDescDM;
     private String songText;
 
     public MusicBean() {
-        songDescDao = new SongDescDao();
-        songs = songDescDao.getAll();
+        songDescDM = new SongDescDM();
+        songs = songDescDM.getAll();
     }
     
     public String getSongFile() {
@@ -43,6 +43,10 @@ public class MusicBean implements Serializable {
 
     public void setSongText(String songText) {
         this.songText = songText;
+    }
+    
+    public String getIP() {
+        return SongDescDM.IP;
     }
     
     public void changeMusic(SongDesc songDesc) {
