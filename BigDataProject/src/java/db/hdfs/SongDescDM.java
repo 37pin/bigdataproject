@@ -53,6 +53,8 @@ public class SongDescDM {
                 allSongDescs.add(new SongDesc(row[0], row[1], row[2], row[3], Integer.valueOf(row[4])));
                 line = br.readLine();
             }
+            br.close();
+            fs.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -38,6 +38,7 @@ execute 'create table artists(idartist integer, name string, primary key(idartis
 execute 'create table albums(idalbum integer, title string, primary key(idalbum))'
 execute 'create table songs(idsong string, idalbum integer, idgenre integer, primary key(idsong))'
 execute 'create table atoa(idartist integer, idalbum integer, primary key(idartist, idalbum))'
+execute 'create index idx_genres_idgenre on genres(idgenre)'
 
 put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"EYS7NQDOS3"}'
 

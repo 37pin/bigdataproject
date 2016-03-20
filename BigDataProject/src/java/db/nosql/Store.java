@@ -5,9 +5,9 @@ import oracle.kv.KVStoreConfig;
 import oracle.kv.KVStoreFactory;
 
 public class Store {
-    
+
     private static KVStore store;
-    
+
     public static KVStore getStore() {
         if (store == null) {
             String storeName = "kvstore";
@@ -17,5 +17,12 @@ public class Store {
         }
         return store;
     }
-    
+
+    public static void closeStore() {
+        if (store != null) {
+            store.close();
+            store = null;
+        }
+    }
+
 }

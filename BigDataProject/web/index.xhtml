@@ -19,13 +19,18 @@
             <br/>
             <div>
                 <div>
-                    <h:outputText value="Track:"/>
+                    <b>
+                        <h:outputText value="Track:"/>
+                    </b>
                 </div>
                 <div>
                     <h:outputText value="#{musicBean.currentSong.title}"/>
                 </div>
                 <div>
-                    <h:outputText value="Artist: #{musicBean.currentSong.nameArtist}"/>
+                    <b>
+                        <h:outputText value="Artist: "/>
+                    </b>
+                    <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
                 </div>
             </div>
             <br/>

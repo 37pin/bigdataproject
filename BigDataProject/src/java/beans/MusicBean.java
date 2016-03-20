@@ -20,7 +20,6 @@ public class MusicBean implements Serializable {
     public MusicBean() {
         songDescDM = new SongDescDM();
         songs = songDescDM.getAll();
-        new GenreDM().getAll();
     }
     
     public void search() {
