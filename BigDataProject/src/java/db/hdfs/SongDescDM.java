@@ -12,10 +12,35 @@ import org.apache.hadoop.fs.Path;
 
 public class SongDescDM {
     
-    public static final String IP = "10.154.101.248";
+    public static final String IP = "192.168.206.165";
+    private static List<SongDesc> allSongDescs;
+    
+    public List<SongDesc> search(String query) {
+        String[] queryWords = query.trim().toLowerCase().split(" ");
+        List<SongDesc> result = new ArrayList<>();
+        List<SongDesc> songDescs = getAll();
+        for (SongDesc sd : songDescs) {
+            boolean isExist = true;
+            for (String word : queryWords) {
+                if (!sd.getTitle().trim().toLowerCase().contains(word) && !sd.getNameArtist().trim().toLowerCase().contains(word)) {
+                    isExist = false;
+                    break;
+                }
+            }
+            if (isExist) result.add(sd);
+        }
+        return result;
+    }
     
     public List<SongDesc> getAll() {
-        List<SongDesc> allSongDescs = new ArrayList<>();
+        if (allSongDescs == null) {
+            allSongDescs = refresh();
+        }
+        return allSongDescs;
+    }
+    
+    public List<SongDesc> refresh() {
+        allSongDescs = new ArrayList<>();
         try {
             Path pt = new Path("/music/songsdesc.csv");
             Configuration conf = new Configuration();
@@ -25,7 +50,7 @@ public class SongDescDM {
             line = br.readLine();
             while (line != null) {
                 String[] row = line.split("\\|");
-                allSongDescs.add(new SongDesc(row[0], row[1], row[2], Integer.valueOf(row[3])));
+                allSongDescs.add(new SongDesc(row[0], row[1], row[2], row[3], Integer.valueOf(row[4])));
                 line = br.readLine();
             }
         } catch (Exception e) {

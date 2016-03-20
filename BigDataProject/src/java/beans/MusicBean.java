@@ -1,6 +1,7 @@
 package beans;
 
 import db.hdfs.SongDescDM;
+import db.nosql.GenreDM;
 import java.io.Serializable;
 import entities.hdfs.SongDesc;
 import java.util.List;
@@ -11,22 +12,20 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class MusicBean implements Serializable {
 
-    private String songFile;
     private List<SongDesc> songs = null;
-    private SongDescDM songDescDM;
-    private String songText;
+    private final SongDescDM songDescDM;
+    private SongDesc currentSong;
+    private String query;
 
     public MusicBean() {
         songDescDM = new SongDescDM();
         songs = songDescDM.getAll();
+        new GenreDM().getAll();
     }
     
-    public String getSongFile() {
-        return songFile;
-    }
-
-    public void setSongFile(String songFile) {
-        this.songFile = songFile;
+    public void search() {
+        songs = songDescDM.search(getQuery());
+        changeMusic(currentSong);
     }
 
     public List<SongDesc> getSongs() {
@@ -37,12 +36,12 @@ public class MusicBean implements Serializable {
         this.songs = songs;
     }
 
-    public String getSongText() {
-        return songText;
+    public SongDesc getCurrentSong() {
+        return currentSong;
     }
 
-    public void setSongText(String songText) {
-        this.songText = songText;
+    public void setSongText(SongDesc currentSong) {
+        this.currentSong = currentSong;
     }
     
     public String getIP() {
@@ -50,8 +49,15 @@ public class MusicBean implements Serializable {
     }
     
     public void changeMusic(SongDesc songDesc) {
-        songFile = songDesc.getFileName();
-        songText = songDesc.getTitle() + ", " + songDesc.getYear();
+        currentSong = songDesc;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
     }
     
 }

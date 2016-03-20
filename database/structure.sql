@@ -15,7 +15,7 @@ HIVE
 	external tables
 
 HDFS
-	songsdesc(idsong, namefile, title, year)
+	songsdesc(idsong, namefile, nameartist, title, year)
 
 SQL
 	external tables
@@ -430,7 +430,7 @@ REJECT LIMIT UNLIMITED;
 CREATE TABLE songsdesc_ext (
 	idsong varchar2(255),
 	namefile varchar2(255),
-	idartist int,
+	nameartist varchar2(255),
 	title varchar2(255),
 	year number(4)
 )
