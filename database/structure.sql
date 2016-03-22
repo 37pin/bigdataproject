@@ -1,6 +1,5 @@
 NoSQL
-	likes(email, idsong)
-	recommends(email, idsong)
+	likes(email, idsong, recommend)
 	comments(idcomment, idsong, email, commentbody, commentdate)
 	genres(idgenre, title)
 	artists(idartist, name)
@@ -30,19 +29,82 @@ java -Xmx256m -Xms256m -jar $KVHOME/lib/kvstore.jar kvlite
 java -jar $KVHOME/lib/kvstore.jar runadmin -port 5000 -host bigdatalite.localdomain
 
 connect store -name kvstore
-execute 'create table likes(email string, idsong string, primary key(email, idsong))'
-execute 'create table recommends(email string, idsong string, primary key(email, idsong))'
+execute 'create table likes(email string, idsong string, recommend integer, primary key(email, idsong))'
 execute 'create table comments(idcomment integer, idsong string, email string, commentbody string, commentdate string, primary key(idcomment))'
 execute 'create table genres(idgenre integer, title string, primary key(idgenre))'
 execute 'create table artists(idartist integer, name string, primary key(idartist))'
 execute 'create table albums(idalbum integer, title string, primary key(idalbum))'
 execute 'create table songs(idsong string, idalbum integer, idgenre integer, primary key(idsong))'
 execute 'create table atoa(idartist integer, idalbum integer, primary key(idartist, idalbum))'
-execute 'create index idx_genres_idgenre on genres(idgenre)'
 
-put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"EYS7NQDOS3"}'
-
-put table -name recommends -json '{"email":"n.chernyshov@gmail.com", "idsong":"EYS7NQDOS3"}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"EYS7NQDOS3", "recommend":1}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"CFZZ08IAT6", "recommend":0}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"AIB4YK25MI", "recommend":1}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"YBINS73DXR", "recommend":1}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"ZUTZM4Z7EC", "recommend":0}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"98ZP7Q5E7A", "recommend":0}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"EYS7NQDOS3", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"LP5JZFLEY0", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"6TEYMI82DZ", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"YBINS73DXR", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"ZUTZM4Z7EC", "recommend":0}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"98ZP7Q5E7A", "recommend":0}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"3U9AG1MQB9", "recommend":0}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"X1RW4WSK2K", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"0A9AAI0SDE", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"4B7MAZ5YNB", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"COYPC9WEYE", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"J7KANYSBRF", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"EYS7NQDOS3", "recommend":0}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"LP5JZFLEY0", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"23KIR7XI5W", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"QNKEJ6MGF1", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"RW2N0P2IOR", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"23KIR7XI5W", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"10YBBMBZ3I", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"C9P0R1Y3C7", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"CJ615FEQCA", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"T5WHT3IDD5", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"SL1DUFVHFP", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"EYS7NQDOS3", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"L9EP65P6XW", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"K0YTJY260D", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"6JACJ1RDXF", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"2L30CSF091", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"QNST2XQ8AW", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"3V66999M5O", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"Z8HDY0FVD2", "recommend":0}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"1GERKP5JKK", "recommend":1}'
+put table -name likes -json '{"email":"n.petrova@gmail.com", "idsong":"M41IJWTVNH", "recommend":1}'
+put table -name likes -json '{"email":"v.kulikova@gmail.com", "idsong":"QNST2XQ8AW", "recommend":0}'
+put table -name likes -json '{"email":"v.kulikova@gmail.com", "idsong":"3V66999M5O", "recommend":1}'
+put table -name likes -json '{"email":"v.kulikova@gmail.com", "idsong":"Z8HDY0FVD2", "recommend":0}'
+put table -name likes -json '{"email":"v.kulikova@gmail.com", "idsong":"1GERKP5JKK", "recommend":1}'
+put table -name likes -json '{"email":"v.kulikova@gmail.com", "idsong":"M41IJWTVNH", "recommend":1}'
+put table -name likes -json '{"email":"n.krivosheev@gmail.com", "idsong":"EYS7NQDOS3", "recommend":0}'
+put table -name likes -json '{"email":"n.krivosheev@gmail.com", "idsong":"3V66999M5O", "recommend":0}'
+put table -name likes -json '{"email":"n.krivosheev@gmail.com", "idsong":"Z8HDY0FVD2", "recommend":0}'
+put table -name likes -json '{"email":"n.krivosheev@gmail.com", "idsong":"1GERKP5JKK", "recommend":0}'
+put table -name likes -json '{"email":"n.krivosheev@gmail.com", "idsong":"LP5JZFLEY0", "recommend":0}'
+put table -name likes -json '{"email":"v.baranova@gmail.com", "idsong":"EYS7NQDOS3", "recommend":0}'
+put table -name likes -json '{"email":"v.baranova@gmail.com", "idsong":"LP5JZFLEY0", "recommend":0}'
+put table -name likes -json '{"email":"k.zaharova@gmail.com", "idsong":"EYS7NQDOS3", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"EYS7NQDOS3", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"L9EP65P6XW", "recommend":0}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"K0YTJY260D", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"6JACJ1RDXF", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"2L30CSF091", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"QNST2XQ8AW", "recommend":0}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"3V66999M5O", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"Z8HDY0FVD2", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"1GERKP5JKK", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanova@gmail.com", "idsong":"M41IJWTVNH", "recommend":0}'
+put table -name likes -json '{"email":"n.gavrilov@gmail.com", "idsong":"EYS7NQDOS3", "recommend":0}'
+put table -name likes -json '{"email":"n.gavrilov@gmail.com", "idsong":"L9EP65P6XW", "recommend":1}'
+put table -name likes -json '{"email":"n.gavrilov@gmail.com", "idsong":"K0YTJY260D", "recommend":0}'
+put table -name likes -json '{"email":"n.gavrilov@gmail.com", "idsong":"6JACJ1RDXF", "recommend":1}'
+put table -name likes -json '{"email":"n.gavrilov@gmail.com", "idsong":"2L30CSF091", "recommend":1}'
+put table -name likes -json '{"email":"d.kulikov@gmail.com", "idsong":"EYS7NQDOS3", "recommend":1}'
 
 put table -name comments -json '{"idcomment":1," idsong":"EYS7NQDOS3", "email":"n.chernyshov@gmail.com", "commentbody":"Very good!", "commentdate":"18/03/2016"}'
 
@@ -168,13 +230,23 @@ create table profiles(email string, name string, surname string, birthday string
 insert into profiles values('n.chernyshov@gmail.com', 'Nitita', 'Chernyshov', '01/04/1999', 1, 'qwerty');
 insert into profiles values('a.bardin@gmail.com', 'Alexander', 'Bardin', '02/04/2000', 1, 'user');
 insert into profiles values('admin', 'admin', 'admin', '01/01/1970', 1, 'admin');
+insert into profiles values('i.ivanov@gmail.com', 'Ivan', 'Ivanov', '21/04/1999', 1, 'qwerty');
+insert into profiles values('n.petrova@gmail.com', 'Nadejda', 'Petrova', '12/07/1993', 2, 'user');
+insert into profiles values('v.kulikova@gmail.com', 'Viktoria', 'Kulikova', '01/05/1985', 2, 'admin');
+insert into profiles values('n.krivosheev@gmail.com', 'Nikolay', 'Krivosheev', '01/04/1991', 1, 'qwerty');
+insert into profiles values('v.baranova@gmail.com', 'Vera', 'Baranova', '17/10/2000', 2, 'user');
+insert into profiles values('k.zaharova@gmail.com', 'Kristina', 'Zaharova', '06/11/1996', 2, 'admin');
+insert into profiles values('i.ivanova@gmail.com', 'Irina', 'Ivanova', '21/04/1997', 2, 'qwerty');
+insert into profiles values('n.gavrilov@gmail.com', 'Nikita', 'Gavrilov', '12/07/1985', 1, 'user');
+insert into profiles values('d.kulikov@gmail.com', 'Dmitriy', 'Kulikov', '31/05/1988', 1, 'admin');
 
 create table groups(idgroup int, title string);
 create table ptog(email string, idgroup string);
 
 create external table likes_nosql (
 	email string,
-	idsong string)
+	idsong string,
+	recommend int)
 stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
@@ -182,15 +254,6 @@ tblproperties
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
 "oracle.kv.tablename" = "likes");
 
-create external table recommends_nosql (
-	email string,
-	idsong string)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
-tblproperties 
-("oracle.kv.kvstore" = "kvstore", 
-"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
-"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "recommends");
 
 create external table comments_nosql (
 	idcomment int,
@@ -313,7 +376,8 @@ REJECT LIMIT UNLIMITED;
 
 CREATE TABLE likes_hive (
 	email varchar2(255),
-	idsong varchar2(255)
+	idsong varchar2(255),
+	recommend int
 )
 ORGANIZATION EXTERNAL (
 	TYPE ORACLE_HIVE
@@ -321,20 +385,6 @@ ORGANIZATION EXTERNAL (
 	ACCESS PARAMETERS
 	(
 		com.oracle.bigdata.tablename=default.likes_nosql
-	)
-)
-REJECT LIMIT UNLIMITED;
-
-CREATE TABLE recommends_hive (
-	email varchar2(255),
-	idsong varchar2(255)
-)
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
-	(
-		com.oracle.bigdata.tablename=default.recommends_nosql
 	)
 )
 REJECT LIMIT UNLIMITED;
