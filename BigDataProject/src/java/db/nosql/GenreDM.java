@@ -1,11 +1,9 @@
 package db.nosql;
 
 import entities.nosql.Genre;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import oracle.kv.FaultException;
-import oracle.kv.StatementResult;
-import oracle.kv.table.IndexKey;
 import oracle.kv.table.PrimaryKey;
 import oracle.kv.table.Row;
 import oracle.kv.table.Table;
@@ -14,20 +12,20 @@ import oracle.kv.table.TableIterator;
 
 public class GenreDM {
 
-    private static List<Genre> allGenres;
+    private static Map<String, Object> allGenres;
 
-    public List<Genre> getAll() {
+    public static Map<String, Object> getAll() {
         if (allGenres == null) {
-            allGenres = new ArrayList<>();
+            allGenres = new LinkedHashMap<>();
             try {
                 TableAPI tableH = Store.getStore().getTableAPI();
                 Table table = tableH.getTable("genres");
-                IndexKey ik = table.getIndex("idx_genres_idgenre").createIndexKey();
-                TableIterator<Row> iter = tableH.tableIterator(ik, null, null);
+                PrimaryKey pkey = table.createPrimaryKey();
+                TableIterator<Row> iter = tableH.tableIterator(pkey, null, null);
                 try {
                     while (iter.hasNext()) {
                         Row row = iter.next();
-                        allGenres.add(new Genre(row.get("idgenre").asInteger().get(), row.get("title").asString().get()));
+                        allGenres.put(row.get("title").asString().get(), row.get("idgenre").asInteger().get());
                     }
                 } finally {
                     if (iter != null) {
@@ -44,10 +42,7 @@ public class GenreDM {
         return allGenres;
     }
 
-    public Genre getById(int idgenre) {
-        TableAPI tableAPI = Store.getStore().getTableAPI();
-        StatementResult result = null;
-        String statement = null;
+    public static Genre getById(int idgenre) {
         try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("genres");
