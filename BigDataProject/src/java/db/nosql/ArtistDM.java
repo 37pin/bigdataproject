@@ -2,7 +2,6 @@ package db.nosql;
 
 import entities.nosql.Artist;
 import oracle.kv.FaultException;
-import oracle.kv.StatementResult;
 import oracle.kv.table.PrimaryKey;
 import oracle.kv.table.Row;
 import oracle.kv.table.Table;
@@ -10,10 +9,7 @@ import oracle.kv.table.TableAPI;
 
 public class ArtistDM {
 
-    public Artist getById(int idartist) {
-        TableAPI tableAPI = Store.getStore().getTableAPI();
-        StatementResult result = null;
-        String statement = null;
+    public static Artist getById(int idartist) {
         try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("artists");

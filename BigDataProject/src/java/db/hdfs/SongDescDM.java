@@ -12,34 +12,17 @@ import org.apache.hadoop.fs.Path;
 
 public class SongDescDM {
     
-    public static final String IP = "192.168.206.165";
+    public static final String IP = "192.168.204.246";
     private static List<SongDesc> allSongDescs;
     
-    public List<SongDesc> search(String query) {
-        String[] queryWords = query.trim().toLowerCase().split(" ");
-        List<SongDesc> result = new ArrayList<>();
-        List<SongDesc> songDescs = getAll();
-        for (SongDesc sd : songDescs) {
-            boolean isExist = true;
-            for (String word : queryWords) {
-                if (!sd.getTitle().trim().toLowerCase().contains(word) && !sd.getNameArtist().trim().toLowerCase().contains(word)) {
-                    isExist = false;
-                    break;
-                }
-            }
-            if (isExist) result.add(sd);
-        }
-        return result;
-    }
-    
-    public List<SongDesc> getAll() {
+    public static List<SongDesc> getAll() {
         if (allSongDescs == null) {
             allSongDescs = refresh();
         }
         return allSongDescs;
     }
     
-    public List<SongDesc> refresh() {
+    public static List<SongDesc> refresh() {
         allSongDescs = new ArrayList<>();
         try {
             Path pt = new Path("/music/songsdesc.csv");
