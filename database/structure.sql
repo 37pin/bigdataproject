@@ -319,13 +319,24 @@ tblproperties
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
 "oracle.kv.tableName" = "atoa");
 
+create external table songsdesc_hdfs (
+idsong string,
+namefile string,
+nameartist string,
+title string,
+year int)
+row format delimited fields terminated by '|'
+stored as textfile location 'hdfs:/music/songsdesc/';
+
 !quit
 
 -- SQL
 sqlplus / as sysdba
-
 startup
 connect system/welcome1
+
+CREATE OR REPLACE DIRECTORY ORACLE_BIGDATA_CONFIG AS '/u01/bigdatasql_config';
+CREATE OR REPLACE DIRECTORY "ORA_BIGDATA_CL_bigdatalite" AS '';
 
 CREATE TABLE profiles_hive (
 	email varchar2(255),
@@ -463,7 +474,6 @@ ORGANIZATION EXTERNAL (
 REJECT LIMIT UNLIMITED;
 
 CREATE TABLE atoa_hive (
-	atoa int,
 	idartist int,
 	idalbum int
 )
@@ -477,24 +487,22 @@ ORGANIZATION EXTERNAL (
 )
 REJECT LIMIT UNLIMITED;
 
-CREATE TABLE songsdesc_ext (
+CREATE TABLE songsdesc_hive (
 	idsong varchar2(255),
 	namefile varchar2(255),
 	nameartist varchar2(255),
 	title varchar2(255),
-	year number(4)
+	year int
 )
 ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HDFS
+	TYPE ORACLE_HIVE
 	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS (
-		com.oracle.bigdata.fileformat:TEXTFILE
-		com.oracle.bigdata.overflow:{"action":"truncate"}
-		com.oracle.bigdata.erroropt:{"action":"setnull"}
-		ROW FORMAT DELIMITED FIELDS TERMINATED BY '|'
+	ACCESS PARAMETERS
+	(
+		com.oracle.bigdata.tablename=default.songsdesc_hdfs
 	)
-	LOCATION ('hdfs:/music/songsdesc.csv')
-);
+)
+REJECT LIMIT UNLIMITED;
 
 exit
 
