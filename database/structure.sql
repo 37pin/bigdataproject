@@ -244,9 +244,9 @@ create table groups(idgroup int, title string);
 create table ptog(email string, idgroup string);
 
 create external table likes_nosql (
-	email string,
-	idsong string,
-	recommend int)
+email string,
+idsong string,
+recommend int)
 stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
