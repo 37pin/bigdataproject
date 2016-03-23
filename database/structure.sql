@@ -247,78 +247,77 @@ create external table likes_nosql (
 email string,
 idsong string,
 recommend int)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "likes");
-
+"oracle.kv.tableName" = "likes");
 
 create external table comments_nosql (
-	idcomment int,
-	idsong string, 
-	email string,
-	commentbody string,
-	commentdate string)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+idcomment int,
+idsong string, 
+email string,
+commentbody string,
+commentdate string)
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "comments");
+"oracle.kv.tableName" = "comments");
 
 create external table genres_nosql (
-	idgenre int,
-	title string)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+idgenre int,
+title string)
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "genres");
+"oracle.kv.tableName" = "genres");
 
 create external table artists_nosql (
-	idartist int,
-	name string)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+idartist int,
+name string)
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "artists");
+"oracle.kv.tableName" = "artists");
 
 create external table albums_nosql (
-	idalbum int,
-	title string)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+idalbum int,
+title string)
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "albums");
+"oracle.kv.tableName" = "albums");
 
 create external table songs_nosql (
-	idsong string,
-	idalbum int, 
-	idgenre int)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+idsong string,
+idalbum int, 
+idgenre int)
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "songs");
+"oracle.kv.tableName" = "songs");
 
 create external table atoa_nosql (
-	idatoa int,
-	idartist int, 
-	idalbum int)
-stored by 'oracle.kv.hadoop.hive.table.tablestoragehandler' 
+idatoa int,
+idartist int, 
+idalbum int)
+stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
 tblproperties 
 ("oracle.kv.kvstore" = "kvstore", 
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tablename" = "atoa");
+"oracle.kv.tableName" = "atoa");
 
 !quit
 
