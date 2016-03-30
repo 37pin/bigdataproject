@@ -1,0 +1,44 @@
+body {
+    font-family: sans-serif;
+}
+
+input[type=text].search {
+    width: 400px;
+}
+
+.like input[type=checkbox] {
+    display: none;
+}
+
+.like input[type=checkbox] + span {
+    background: url("#{resource['icons/like.png']}") no-repeat left center;
+    background-size: 22px 22px;
+    padding-left: 30px;
+    padding-top: 30px;
+    margin-top: 20px
+}
+
+.like input[type=checkbox]:checked + span {
+    background-image: url("#{resource['icons/liked.png']}");
+}
+
+.recommend input[type=checkbox] + span {
+    background: url("#{resource['icons/recommend.png']}") no-repeat left center;
+    background-size: 22px 22px;
+}
+
+.recommend input[type=checkbox]:checked + span {
+    background-image: url("#{resource['icons/recommended.png']}");
+}
+
+a.songslist {
+    text-decoration: none;
+}
+
+a.songslist:hover {
+    text-decoration: underline;
+}
+
+a.boldlink {
+    font-weight: bold;
+}

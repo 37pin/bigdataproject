@@ -4,25 +4,24 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <title>Music</title>
+        <h:outputStylesheet name="css/style.css"/>
     </h:head>
     <h:body>
         <h:form id="player">
             <div>
                 <div>
-                    <b>
-                        <h:outputText value="Track:"/>
-                    </b>
+                    <h:outputText value="Track: " style="font-weight: bold;"/>
                     <h:outputText value="#{musicBean.currentSong.title}"/>
                 </div>
                 <div>
-                    <b>
-                        <h:outputText value="Artist: "/>
-                    </b>
+                    <h:outputText value="Artist: " style="font-weight: bold;"/>
                     <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
+                </div>
+                <div>
+                    <h:outputText value="#{musicBean.currentSong.year}"/>
                 </div>
             </div>
             <div>
@@ -31,39 +30,49 @@
                 </audio>
             </div>
         </h:form>
+        <h:form id="likes">
+            <div style="padding-top: 20px">
+                <h:outputLabel class="like">
+                    <h:selectBooleanCheckbox value="#{musicBean.checkLike}">
+                        <f:ajax event="click" listener="#{musicBean.changeLike}" execute="@form" render=":likes"/>
+                    </h:selectBooleanCheckbox>
+                    <ui:fragment>
+                        <span/>
+                    </ui:fragment>
+                </h:outputLabel>
+                <h:outputLabel class="like recommend">
+                    <h:selectBooleanCheckbox value="#{musicBean.checkRecommend}">
+                        <f:ajax event="click" listener="#{musicBean.changeRecommend}" execute="@form" render=":likes"/>
+                    </h:selectBooleanCheckbox>
+                    <ui:fragment>
+                        <span/>
+                    </ui:fragment>
+                </h:outputLabel>
+            </div>
+        </h:form>
         <br/>
-        <h:form id="musiclist">
+        <h:form id="songslist">
             <div>
-                <b>
-                    <h:outputText value="Genres:"/>
-                </b>
+                <h:outputText value="Genres:" style="font-weight: bold;"/>
             </div>
             <div>
-                <!--
                 <h:selectManyCheckbox value="#{musicBean.selectedGenres}">
+                    <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
                     <f:selectItems value="#{musicBean.genres}"/>
-                    <f:ajax event="change" render="@form" listener="#{musicBean.search()}" />
                 </h:selectManyCheckbox>
-                -->
-                <p:selectManyCheckbox value="#{musicBean.selectedGenres}" valueChangeListener="#{musicBean.search}">
-                    <p:ajax event="click"/>
-                    <f:selectItems value="#{musicBean.genres}"/>
-                </p:selectManyCheckbox>
             </div>
-            <h:inputText id="SongFind" value="#{musicBean.query}" a:placeholder="Enter a artist or title"/>
+            <h:inputText value="#{musicBean.query}" class="search" a:placeholder="Enter a artist or title"/>
             <h:commandButton value="Search" actionListener="#{musicBean.search}">
-                <f:ajax execute="@form" render=":musiclist" />
+                <f:ajax execute="@form" render=":songslist" />
             </h:commandButton>
             <ui:repeat value="#{musicBean.songs}" var="song">
                 <div>
-                    <b>
-                        <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.nameArtist}">
-                            <f:ajax execute="@form" render=":player" />
-                        </h:commandLink>
-                    </b>
+                    <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.nameArtist}" class="songslist boldlink">
+                        <f:ajax execute="@form" render=":player :likes" />
+                    </h:commandLink>
                      - 
-                    <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}">
-                        <f:ajax execute="@form" render=":player" />
+                    <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}" class="songslist">
+                        <f:ajax execute="@form" render=":player :likes" />
                     </h:commandLink>
                 </div>
             </ui:repeat>

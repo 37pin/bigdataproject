@@ -2,12 +2,13 @@ package beans;
 
 import db.hdfs.SongDescDM;
 import db.nosql.GenreDM;
+import db.nosql.LikeDM;
 import db.nosql.SongDM;
 import java.io.Serializable;
 import entities.hdfs.SongDesc;
+import entities.nosql.Like;
 import entities.nosql.Song;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import javax.faces.bean.ManagedBean;
@@ -21,33 +22,47 @@ public class MusicBean implements Serializable {
     private SongDesc currentSong;
     private String query;
     private int[] selectedGenres;
+    private boolean checkLike;
+    private boolean checkRecommend;
+    public String user;
 
     public MusicBean() {
         songs = SongDescDM.getAll();
+        user = "test@test.com";
     }
     
-    public List<SongDesc> getSongs() {
-        return songs;
+    public void changeLike() {
+        if (checkLike) {
+            if (LikeDM.get(user, currentSong.getId()) == null) {
+                LikeDM.insert(new Like(user, currentSong.getId(), 0));
+            }
+        } else {
+            LikeDM.drop(user, currentSong.getId());
+            setCheckRecommend(false);
+        }
     }
-
-    public void setSongs(List<SongDesc> songs) {
-        this.songs = songs;
+    
+    public void changeRecommend() {
+        if (checkRecommend) {
+            Like like = LikeDM.get(user, currentSong.getId());
+            if (like == null) {
+                LikeDM.insert(new Like(user, currentSong.getId(), 1));
+                setCheckLike(true);
+                return;
+            }
+            if (like.getRecommend() == 0) {
+                like.setRecommend(1);
+                LikeDM.update(like);
+            }
+        } else {
+            if (LikeDM.get(user, currentSong.getId()) != null) {
+                LikeDM.update(new Like(user, currentSong.getId(), 0));
+            }
+        }
     }
-
-    public SongDesc getCurrentSong() {
-        return currentSong;
-    }
-
-    public void setSongText(SongDesc currentSong) {
-        this.currentSong = currentSong;
-    }
-
-    public int[] getSelectedGenres() {
-        return selectedGenres;
-    }
-
+    
     public void search() {
-        if (query == null) return;
+        if (query == null) query = "";
         String[] queryWords = query.trim().toLowerCase().split(" ");
         songs = new ArrayList<>();
         List<SongDesc> songDescs = SongDescDM.getAll();
@@ -61,7 +76,7 @@ public class MusicBean implements Serializable {
             }
             if (isExist) {
                 if (selectedGenres.length > 0) {
-                    Song song = SongDM.getById(sd.getId());
+                    Song song = SongDM.get(sd.getId());
                     for (int idGenre : selectedGenres) {
                         if (idGenre == song.getIdGenre()) {
                             songs.add(sd);
@@ -74,7 +89,27 @@ public class MusicBean implements Serializable {
             }
         }
     }
+    
+    public List<SongDesc> getSongs() {
+        return songs;
+    }
+    
+    public void setSongs(List<SongDesc> songs) {
+        this.songs = songs;
+    }
 
+    public SongDesc getCurrentSong() {
+        return currentSong;
+    }
+
+    public void setCurrentSong(SongDesc currentSong) {
+        this.currentSong = currentSong;
+    }
+
+    public int[] getSelectedGenres() {
+        return selectedGenres;
+    }
+    
     public void setSelectedGenres(int[] selectedGenres) {
         this.selectedGenres = selectedGenres;
     }
@@ -97,6 +132,26 @@ public class MusicBean implements Serializable {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public boolean isCheckLike() {
+        if (currentSong == null) return false;
+        return LikeDM.get(user, currentSong.getId()) != null;
+    }
+
+    public void setCheckLike(boolean like) {
+        this.checkLike = like;
+    }
+
+    public boolean isCheckRecommend() {
+        if (currentSong == null) return false;
+        Like like = LikeDM.get(user, currentSong.getId());
+        if (like == null) return false;
+        return like.getRecommend() == 1;
+    }
+
+    public void setCheckRecommend(boolean recommend) {
+        this.checkRecommend = recommend;
     }
 
 }

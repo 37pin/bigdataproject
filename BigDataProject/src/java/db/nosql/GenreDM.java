@@ -42,13 +42,14 @@ public class GenreDM {
         return allGenres;
     }
 
-    public static Genre getById(int idgenre) {
+    public static Genre get(int idgenre) {
         try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("genres");
             PrimaryKey key = table.createPrimaryKey();
             key.put("idgenre", idgenre);
             Row row = tableH.get(key, null);
+            if (row == null) return null;
             return new Genre(idgenre, row.get("title").asString().get());
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid statement:\n" + e.getMessage());

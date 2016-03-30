@@ -9,13 +9,14 @@ import oracle.kv.table.TableAPI;
 
 public class ArtistDM {
 
-    public static Artist getById(int idartist) {
+    public static Artist get(int idartist) {
         try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("artists");
             PrimaryKey key = table.createPrimaryKey();
             key.put("idartist", idartist);
             Row row = tableH.get(key, null);
+            if (row == null) return null;
             return new Artist(idartist, row.get("name").asString().get());
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid statement:\n" + e.getMessage());

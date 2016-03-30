@@ -20,9 +20,7 @@ SQL
 	external tables
 
 -- HDFS
-hdfs dfs -mkdir /music
-hdfs dfs -put songsdesc.csv /music
-hdfs dfs -ls /music
+hdfs dfs -put songsdesc.csv /music/songsdesc/
 
 -- NoSQL
 java -Xmx256m -Xms256m -jar $KVHOME/lib/kvstore.jar kvlite

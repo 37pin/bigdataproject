@@ -12,7 +12,7 @@ import org.apache.hadoop.fs.Path;
 
 public class SongDescDM {
     
-    public static final String IP = "192.168.204.246";
+    public static final String IP = "192.168.206.17";
     private static List<SongDesc> allSongDescs;
     
     public static List<SongDesc> getAll() {
@@ -25,7 +25,7 @@ public class SongDescDM {
     public static List<SongDesc> refresh() {
         allSongDescs = new ArrayList<>();
         try {
-            Path pt = new Path("/music/songsdesc.csv");
+            Path pt = new Path("/music/songsdesc/songsdesc.csv");
             Configuration conf = new Configuration();
             FileSystem fs = FileSystem.get(new URI("webhdfs://bigdatalite.localdomain:50070"), conf);
             BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(pt)));
