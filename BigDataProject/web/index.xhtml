@@ -10,73 +10,79 @@
         <h:outputStylesheet name="css/style.css"/>
     </h:head>
     <h:body>
-        <h:form id="player">
-            <div>
-                <div>
-                    <h:outputText value="Track: " style="font-weight: bold;"/>
-                    <h:outputText value="#{musicBean.currentSong.title}"/>
-                </div>
-                <div>
-                    <h:outputText value="Artist: " style="font-weight: bold;"/>
-                    <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
-                </div>
-                <div>
-                    <h:outputText value="#{musicBean.currentSong.year}"/>
-                </div>
+        <div id="header">
+            <h:link outcome="index" class="logolink">
+                <span id="logo"/>
+                Music
+            </h:link>
+        </div>
+        <div id="container">
+            <div id="playerdiv">
+                <h:form id="player" style="display: #{musicBean.playerStyle}">
+                    <div>
+                        <h:outputText value="Track: " style="font-weight: bold;"/>
+                        <h:outputText value="#{musicBean.currentSong.title}"/>
+                    </div>
+                    <div>
+                        <h:outputText value="Artist: " style="font-weight: bold;"/>
+                        <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
+                    </div>
+                    <div>
+                        <h:outputText value="#{musicBean.currentSong.year}"/>
+                    </div>
+                    <div>
+                        <audio controls="controls" autoplay="autoplay" type="audio/mp3" src="http://#{musicBean.IP}:50075/webhdfs/v1/music/#{musicBean.currentSong.songFile}?op=OPEN&amp;namenoderpcaddress=bigdatalite.localdomain:8020">
+                            <h:outputText value="Your browser does not supported."/>
+                        </audio>
+                    </div>
+                </h:form>
+                <h:form id="likes" style="display: #{musicBean.playerStyle}">
+                    <div style="padding-top: 20px">
+                        <h:outputLabel class="like">
+                            <h:selectBooleanCheckbox value="#{musicBean.checkLike}">
+                                <f:ajax event="click" listener="#{musicBean.changeLike}" execute="@form" render=":likes"/>
+                            </h:selectBooleanCheckbox>
+                            <ui:fragment>
+                                <span/>
+                            </ui:fragment>
+                        </h:outputLabel>
+                        <h:outputLabel class="like recommend">
+                            <h:selectBooleanCheckbox value="#{musicBean.checkRecommend}">
+                                <f:ajax event="click" listener="#{musicBean.changeRecommend}" execute="@form" render=":likes"/>
+                            </h:selectBooleanCheckbox>
+                            <ui:fragment>
+                                <span/>
+                            </ui:fragment>
+                        </h:outputLabel>
+                    </div>
+                </h:form>
             </div>
-            <div>
-                <audio controls="controls" autoplay="autoplay" type="audio/mp3" src="http://#{musicBean.IP}:50075/webhdfs/v1/music/#{musicBean.currentSong.songFile}?op=OPEN&amp;namenoderpcaddress=bigdatalite.localdomain:8020">
-                    <h:outputText value="Your browser does not supported."/>
-                </audio>
+            <div id="listdiv">
+                <h:form id="songslist">
+                    <h:inputText value="#{musicBean.query}" class="search" a:placeholder="Enter a artist or title"/>
+                    <h:commandButton value="Search" actionListener="#{musicBean.search}">
+                        <f:ajax execute="@form" render=":songslist" />
+                    </h:commandButton>
+                    <div>
+                        <h:selectManyCheckbox value="#{musicBean.selectedGenres}">
+                            <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
+                            <f:selectItems value="#{musicBean.genres}"/>
+                        </h:selectManyCheckbox>
+                    </div>
+                    <ui:repeat value="#{musicBean.songs}" var="song">
+                        <div>
+                            <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.nameArtist}" class="songslist boldlink">
+                                <f:ajax execute="@form" render=":player :likes" />
+                            </h:commandLink>
+                             - 
+                            <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}" class="songslist">
+                                <f:ajax execute="@form" render=":player :likes" />
+                            </h:commandLink>
+                        </div>
+                    </ui:repeat>
+                </h:form>
             </div>
-        </h:form>
-        <h:form id="likes">
-            <div style="padding-top: 20px">
-                <h:outputLabel class="like">
-                    <h:selectBooleanCheckbox value="#{musicBean.checkLike}">
-                        <f:ajax event="click" listener="#{musicBean.changeLike}" execute="@form" render=":likes"/>
-                    </h:selectBooleanCheckbox>
-                    <ui:fragment>
-                        <span/>
-                    </ui:fragment>
-                </h:outputLabel>
-                <h:outputLabel class="like recommend">
-                    <h:selectBooleanCheckbox value="#{musicBean.checkRecommend}">
-                        <f:ajax event="click" listener="#{musicBean.changeRecommend}" execute="@form" render=":likes"/>
-                    </h:selectBooleanCheckbox>
-                    <ui:fragment>
-                        <span/>
-                    </ui:fragment>
-                </h:outputLabel>
-            </div>
-        </h:form>
-        <br/>
-        <h:form id="songslist">
-            <div>
-                <h:outputText value="Genres:" style="font-weight: bold;"/>
-            </div>
-            <div>
-                <h:selectManyCheckbox value="#{musicBean.selectedGenres}">
-                    <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
-                    <f:selectItems value="#{musicBean.genres}"/>
-                </h:selectManyCheckbox>
-            </div>
-            <h:inputText value="#{musicBean.query}" class="search" a:placeholder="Enter a artist or title"/>
-            <h:commandButton value="Search" actionListener="#{musicBean.search}">
-                <f:ajax execute="@form" render=":songslist" />
-            </h:commandButton>
-            <ui:repeat value="#{musicBean.songs}" var="song">
-                <div>
-                    <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.nameArtist}" class="songslist boldlink">
-                        <f:ajax execute="@form" render=":player :likes" />
-                    </h:commandLink>
-                     - 
-                    <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}" class="songslist">
-                        <f:ajax execute="@form" render=":player :likes" />
-                    </h:commandLink>
-                </div>
-            </ui:repeat>
-        </h:form>
+        </div>
     </h:body>
 </html>
 

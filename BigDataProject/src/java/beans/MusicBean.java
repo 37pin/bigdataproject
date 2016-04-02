@@ -24,10 +24,12 @@ public class MusicBean implements Serializable {
     private int[] selectedGenres;
     private boolean checkLike;
     private boolean checkRecommend;
+    private String playerStyle;
     public String user;
 
     public MusicBean() {
         songs = SongDescDM.getAll();
+        playerStyle = "none";
         user = "test@test.com";
     }
     
@@ -124,6 +126,7 @@ public class MusicBean implements Serializable {
 
     public void changeMusic(SongDesc songDesc) {
         currentSong = songDesc;
+        setPlayerStyle(currentSong != null ? "inline" : "none");
     }
 
     public String getQuery() {
@@ -152,6 +155,14 @@ public class MusicBean implements Serializable {
 
     public void setCheckRecommend(boolean recommend) {
         this.checkRecommend = recommend;
+    }
+
+    public String getPlayerStyle() {
+        return playerStyle;
+    }
+
+    public void setPlayerStyle(String playerStyle) {
+        this.playerStyle = playerStyle;
     }
 
 }

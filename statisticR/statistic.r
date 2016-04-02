@@ -1,7 +1,8 @@
-
-connection <- dbConnect(driver, "jdbc:oracle:thin:@10.154.109.228:1521:cdb", "system",
-"welcome1")
-
+setwd("~/r-project/")
+install.packages("RJDBC")
+library(RJDBC)
+driver <- JDBC("oracle.jdbc.OracleDriver", classPath="~/r-project/ojdbc6.jar", " ")
+connection <- dbConnect(driver, "jdbc:oracle:thin:@10.154.109.228:1521:cdb", "system", "welcome1")
 
 #select top likes
 topLikes<- dbGetQuery(connection, "select s.title, s.nameartist, s.year, c.cn from (select idsong, count(*) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong order by c.cn desc")
