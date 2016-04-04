@@ -20,7 +20,9 @@ SQL
 	external tables
 
 -- HDFS
-hdfs dfs -put songsdesc.csv /music/songsdesc/
+hdfs dfs -mkdir /music
+hdfs dfs -put songsdesc.csv /music
+hdfs dfs -ls /music
 
 -- NoSQL
 java -Xmx256m -Xms256m -jar $KVHOME/lib/kvstore.jar kvlite
@@ -237,6 +239,14 @@ insert into profiles values('k.zaharova@gmail.com', 'Kristina', 'Zaharova', '06/
 insert into profiles values('i.ivanova@gmail.com', 'Irina', 'Ivanova', '21/04/1997', 2, 'qwerty');
 insert into profiles values('n.gavrilov@gmail.com', 'Nikita', 'Gavrilov', '12/07/1985', 1, 'user');
 insert into profiles values('d.kulikov@gmail.com', 'Dmitriy', 'Kulikov', '31/05/1988', 1, 'admin');
+
+insert into profiles values('v.kirov@gmail.com', 'Viktoria', 'Kirov', '01/05/1985', 2, 'admin');
+insert into profiles values('n.shar@gmail.com', 'Nikolay', 'Shar', '01/04/1991', 1, 'qwerty');
+insert into profiles values('v.krivih@gmail.com', 'Vera', 'Krivih', '17/10/2000', 2, 'user');
+insert into profiles values('k.zaripov@gmail.com', 'Kristina', 'Zaripov', '06/11/1996', 2, 'admin');
+insert into profiles values('e.ivanova@gmail.com', 'Elena', 'Ivanova', '21/04/1997', 2, 'qwerty');
+insert into profiles values('v.gavrilov@gmail.com', 'Viktor', 'Gavrilov', '12/07/1985', 1, 'user');
+insert into profiles values('o.kulikov@gmail.com', 'Oleg', 'Kulikov', '31/05/1988', 1, 'admin');
 
 create table groups(idgroup int, title string);
 create table ptog(email string, idgroup string);

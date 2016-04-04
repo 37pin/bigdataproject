@@ -1,0 +1,25 @@
+{
+    "contents" : "",
+    "created" : 1459768529823.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "490E8869",
+    "lastKnownWriteTime" : 7011605692497750387,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "efcq3380ic",
+        "caption" : "allSongsRecom_ER_pro",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=allSongsRecom_ER_pro&cache_key=efcq3380ic",
+        "displayedObservations" : 60,
+        "environment" : "",
+        "object" : "allSongsRecom_ER_pro",
+        "totalObservations" : 60,
+        "variables" : 4
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_dataframe"
+}
