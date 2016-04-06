@@ -1,7 +1,7 @@
 setwd("~/r-project/")
 install.packages("RJDBC")
 library(RJDBC)
-oracleDriver <- JDBC("oracle.jdbc.OracleDriver", classPath="C:/Users/parameeva/bigdataproject/statisticR/ojdbc6.jar", " ")
+oracleDriver <- JDBC("oracle.jdbc.OracleDriver", classPath="C:/Users/parameeva/bigdataproject/statisticR/lib/ojdbc6.jar", " ")
 oracleConnection <- dbConnect(oracleDriver, "jdbc:oracle:thin:@192.168.205.198:1521:cdb", "system","welcome1")
 
 #select top likes
