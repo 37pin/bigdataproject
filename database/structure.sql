@@ -9,6 +9,7 @@ NoSQL
 
 HIVE
 	profiles(email, name, surname, birthday, gender, pass)
+	predictions(email, idsong, probability)
 	groups(idgroup, title)
     ptog(email, idgroup)
 	external tables
@@ -227,6 +228,7 @@ beeline
 oracle
 welcome1
 create table profiles(email string, name string, surname string, birthday string, gender int, pass string);
+create table predictions(email string, idsong string, probability double);
 insert into profiles values('n.chernyshov@gmail.com', 'Nitita', 'Chernyshov', '01/04/1999', 1, 'qwerty');
 insert into profiles values('a.bardin@gmail.com', 'Alexander', 'Bardin', '02/04/2000', 1, 'user');
 insert into profiles values('admin', 'admin', 'admin', '01/01/1970', 1, 'admin');
