@@ -28,6 +28,10 @@
                         <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
                     </div>
                     <div>
+                        <h:outputText value="Album: " style="font-weight: bold;"/>
+                        <h:outputText value="#{musicBean.getSongAlbum(musicBean.currentSong)}"/>
+                    </div>
+                    <div>
                         <h:outputText value="#{musicBean.currentSong.year}"/>
                     </div>
                     <div>
@@ -78,6 +82,7 @@
                             <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}" class="songslist">
                                 <f:ajax execute="@form" render=":player :likes" />
                             </h:commandLink>
+                            <h:outputText value="#{musicBean.getSongGenre(song)}" class="genre"/>
                         </div>
                     </ui:repeat>
                 </h:form>

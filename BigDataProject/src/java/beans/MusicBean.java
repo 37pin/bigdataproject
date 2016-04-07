@@ -1,6 +1,7 @@
 package beans;
 
 import db.hdfs.SongDescDM;
+import db.nosql.AlbumDM;
 import db.nosql.GenreDM;
 import db.nosql.LikeDM;
 import db.nosql.SongDM;
@@ -90,6 +91,15 @@ public class MusicBean implements Serializable {
                 }
             }
         }
+    }
+    
+    public String getSongGenre(SongDesc songDesc) {
+        return GenreDM.get(SongDM.get(songDesc.getId()).getIdGenre()).getTitle();
+    }
+    
+    public String getSongAlbum(SongDesc songDesc) {
+        if (songDesc == null) return null;
+        return AlbumDM.get(SongDM.get(songDesc.getId()).getIdAlbum()).getTitle();
     }
     
     public List<SongDesc> getSongs() {

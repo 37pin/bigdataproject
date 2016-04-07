@@ -82,3 +82,9 @@ a.boldlink {
     float: right;
     width: 350px;
 }
+
+.genre {
+    padding-left: 20px;
+    color: #777;
+    font-size: 15px;
+}
