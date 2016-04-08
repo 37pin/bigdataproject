@@ -1,6 +1,7 @@
 package beans;
 
 import db.hdfs.SongDescDM;
+import db.hive.PredictionDM;
 import db.nosql.AlbumDM;
 import db.nosql.GenreDM;
 import db.nosql.LikeDM;

@@ -12,7 +12,7 @@ import org.apache.hadoop.fs.Path;
 
 public class SongDescDM {
     
-    public static final String IP = "10.154.108.255";
+    public static final String IP = "192.168.206.17";
     private static List<SongDesc> allSongDescs;
     
     public static List<SongDesc> getAll() {

@@ -77,7 +77,7 @@ table(prediction)
 prediction
 View(prediction)
 answerLikes <- data.frame(email = allSongsLikes$EMAIL, idsong = allSongsLikes$IDSONG, probability = prediction[,'Y'])
-
+answerLikes <- answerLikes[order(email, -probability),]
 answerLikesTest <- answerLikes[1:5,]
 options(java.parameters = "-Xmx8g")
 cp = c("C:/Users/parameeva/bigdataproject/statisticR/lib/hive-jdbc.jar",
@@ -91,12 +91,9 @@ cp = c("C:/Users/parameeva/bigdataproject/statisticR/lib/hive-jdbc.jar",
 .jclassPath()
 
 hiveDriver <- JDBC("org.apache.hive.jdbc.HiveDriver", "C:/Users/parameeva/bigdataproject/statisticR/lib/hive-jdbc.jar", identifier.quote="`")
-hiveConnection <- dbConnect(hiveDriver, "jdbc:hive2://192.168.205.198:10000/", "oracle", "welcome1")
+hiveConnection <- dbConnect(hiveDriver, "jdbc:hive2://bigdatalite.localdomain:10000/", "oracle", "welcome1")
 
-show_databases <- dbGetQuery(hiveConnection, "show databases")
-show_databases
 dbSendUpdate(hiveConnection, 'drop table predictions')
-dbSendUpdate(hiveConnection, 'create table predictions(email string, idsong string, probability double)')
 dbSendUpdate(hiveConnection, 'create table predictions(email string, idsong string, probability double)')
 for (i in 1:nrow(answerLikesTest)) {
     row <- answerLikesTest[i,]
