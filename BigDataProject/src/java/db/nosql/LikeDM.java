@@ -1,11 +1,18 @@
 package db.nosql;
 
 import entities.nosql.Like;
+import java.util.ArrayList;
+import java.util.List;
 import oracle.kv.FaultException;
+import oracle.kv.table.FieldRange;
+import oracle.kv.table.Index;
+import oracle.kv.table.IndexKey;
+import oracle.kv.table.MultiRowOptions;
 import oracle.kv.table.PrimaryKey;
 import oracle.kv.table.Row;
 import oracle.kv.table.Table;
 import oracle.kv.table.TableAPI;
+import oracle.kv.table.TableIterator;
 
 public class LikeDM {
 
@@ -28,14 +35,65 @@ public class LikeDM {
         return null;
     }
     
-    public static void insert(Like like) {
+    public static List<String> getSongsByEmail(String email) {
+        List<String> songs = new ArrayList<>();
+        try {
+            TableAPI tableH = Store.getStore().getTableAPI();
+            Table table = tableH.getTable("likes");
+            PrimaryKey key = table.createPrimaryKey();
+            key.put("email", email);
+            List<Row> rows = tableH.multiGet(key, null, null);
+            for (Row row : rows) {
+                songs.add(row.get("idSong").asString().get());
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid statement:\n" + e.getMessage());
+        } catch (FaultException e) {
+            System.out.println("Statement couldn't be executed, please retry: " + e);
+        }
+        Store.closeStore();
+        return songs;
+    }
+    
+    public static List<Like> getByIdSong(String idSong) {
+        List<Like> likes = new ArrayList<>();
+        try {
+            TableAPI tableH = Store.getStore().getTableAPI();
+            Table table = tableH.getTable("likes");
+            Index index = table.getIndex("likessongs");
+            IndexKey indexKey = index.createIndexKey();
+            FieldRange fieldRange = index.createFieldRange("idsong");
+            fieldRange.setStart(idSong, true);
+            fieldRange.setEnd(idSong, true);
+            MultiRowOptions multiRowOptions = fieldRange.createMultiRowOptions();
+            TableIterator<Row> iterator = tableH.tableIterator(indexKey, multiRowOptions, null);
+            try {
+                while (iterator.hasNext()) {
+                    Row row = iterator.next();
+                    likes.add(new Like(row.get("email").asString().get(), idSong, row.get("recommend").asInteger().get()));
+                } 
+            } finally {
+                if (iterator != null) {
+                    iterator.close(); 
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid statement:\n" + e.getMessage());
+        } catch (FaultException e) {
+            System.out.println("Statement couldn't be executed, please retry: " + e);
+        }
+        Store.closeStore();
+        return likes;
+    }
+    
+    public static void insert(String email, String idSong, int recommend) {
 	try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("likes");
             Row row = table.createRow();
-            row.put("email", like.getEmail());
-            row.put("idsong", like.getIdSong());
-            row.put("recommend", like.getRecommend());
+            row.put("email", email);
+            row.put("idsong", idSong);
+            row.put("recommend", recommend);
             tableH.put(row, null, null);
 	}
 	catch (IllegalArgumentException e) {
@@ -46,14 +104,14 @@ public class LikeDM {
 	}
     }
     
-    public static void update(Like like) {
+    public static void update(String email, String idSong, int recommend) {
 	try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("likes");
             Row row = table.createRow();
-            row.put("email", like.getEmail());
-            row.put("idsong", like.getIdSong());
-            row.put("recommend", like.getRecommend());
+            row.put("email", email);
+            row.put("idsong", idSong);
+            row.put("recommend", recommend);
             tableH.putIfPresent(row, null, null);
 	}
 	catch (IllegalArgumentException e) {

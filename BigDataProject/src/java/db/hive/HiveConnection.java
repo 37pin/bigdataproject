@@ -1,38 +1,41 @@
 package db.hive;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 public class HiveConnection {
 
-    private static final String DRIVER = "org.apache.hive.jdbc.HiveDriver";
     private static Connection connection;
     private static Statement statement;
 
     public static Statement getStatement(){
-        if (statement == null) {
-            try {
-                if (connection == null) {
-                    Class.forName(DRIVER);
-                    connection = DriverManager.getConnection("jdbc:hive2://bigdatalite.localdomain:10000/", "oracle", "welcome1");
-                    System.out.println("connect!");
-                }
-                statement = connection.createStatement();
-            } catch (ClassNotFoundException | SQLException e) {
-                e.printStackTrace();
-            }
+        try {
+            InitialContext initialContext = new InitialContext();
+            DataSource ds = (DataSource) initialContext.lookup("jdbc/hiveDatasource");
+            //initialContext.close();
+            connection = ds.getConnection();
+            statement = connection.createStatement();
+            return statement;
+        } catch (NamingException | SQLException e) {
+             e.printStackTrace();
         }
-        return statement;
+        return null;
     }
     
     public static void close() {
         try {
-            statement.close();
-            connection.close();
-            connection = null;
-            statement = null;
+            if (statement != null) {
+                statement.close();
+                statement = null;
+            }
+            if (connection != null) {
+                connection.close();
+                connection = null;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

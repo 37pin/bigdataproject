@@ -1,6 +1,5 @@
 package db.nosql;
 
-import entities.nosql.Genre;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import oracle.kv.FaultException;
@@ -42,7 +41,7 @@ public class GenreDM {
         return allGenres;
     }
 
-    public static Genre get(int idgenre) {
+    public static String get(int idgenre) {
         try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("genres");
@@ -50,7 +49,7 @@ public class GenreDM {
             key.put("idgenre", idgenre);
             Row row = tableH.get(key, null);
             if (row == null) return null;
-            return new Genre(idgenre, row.get("title").asString().get());
+            return row.get("title").asString().get();
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid statement:\n" + e.getMessage());
         } catch (FaultException e) {

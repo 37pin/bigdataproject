@@ -8,6 +8,9 @@
     <h:head>
         <title>Music</title>
         <h:outputStylesheet name="css/style.css"/>
+        <f:metadata>
+            <f:viewAction action="#{musicBean.clear}"/>
+        </f:metadata>
     </h:head>
     <h:body>
         <div id="header">
@@ -17,50 +20,73 @@
             </h:link>
         </div>
         <div id="container">
-            <div id="playerdiv">
-                <h:form id="player" style="display: #{musicBean.playerStyle}">
-                    <div>
-                        <h:outputText value="Track: " style="font-weight: bold;"/>
-                        <h:outputText value="#{musicBean.currentSong.title}"/>
+            <div id="right">
+                <div id="rightandtop">
+                    <h:form id="player" style="display: #{musicBean.playerStyle}">
+                        <div id="playerdiv">
+                            <div>
+                                <h:outputText value="Track: " style="font-weight: bold;"/>
+                                <h:outputText value="#{musicBean.currentSong.title}"/>
+                            </div>
+                            <div>
+                                <h:outputText value="Artist: " style="font-weight: bold;"/>
+                                <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
+                            </div>
+                            <div>
+                                <h:outputText value="Album: " style="font-weight: bold;"/>
+                                <h:outputText value="#{musicBean.getSongAlbum(musicBean.currentSong)}"/>
+                            </div>
+                            <div>
+                                <h:outputText value="#{musicBean.currentSong.year}"/>
+                            </div>
+                            <div>
+                                <audio controls="controls" autoplay="autoplay" type="audio/mp3" src="http://#{musicBean.IP}:50075/webhdfs/v1/music/#{musicBean.currentSong.songFile}?op=OPEN&amp;namenoderpcaddress=bigdatalite.localdomain:8020">
+                                    <h:outputText value="Your browser does not supported."/>
+                                </audio>
+                            </div>
+                        </div>
+                    </h:form>
+                    <h:form id="likes" style="display: #{musicBean.playerStyle}">
+                        <div id="likesdiv">
+                            <h:outputLabel class="like">
+                                <h:selectBooleanCheckbox value="#{musicBean.checkLike}">
+                                    <f:ajax event="click" listener="#{musicBean.changeLike}" execute="@form" render=":likes"/>
+                                </h:selectBooleanCheckbox>
+                                <ui:fragment>
+                                    <span/>
+                                </ui:fragment>
+                            </h:outputLabel>
+                            <h:outputLabel class="like recommend">
+                                <h:selectBooleanCheckbox value="#{musicBean.checkRecommend}">
+                                    <f:ajax event="click" listener="#{musicBean.changeRecommend}" execute="@form" render=":likes"/>
+                                </h:selectBooleanCheckbox>
+                                <ui:fragment>
+                                    <span/>
+                                </ui:fragment>
+                            </h:outputLabel>
+                        </div>
+                    </h:form>
                     </div>
-                    <div>
-                        <h:outputText value="Artist: " style="font-weight: bold;"/>
-                        <h:outputText value="#{musicBean.currentSong.nameArtist}"/>
-                    </div>
-                    <div>
-                        <h:outputText value="Album: " style="font-weight: bold;"/>
-                        <h:outputText value="#{musicBean.getSongAlbum(musicBean.currentSong)}"/>
-                    </div>
-                    <div>
-                        <h:outputText value="#{musicBean.currentSong.year}"/>
-                    </div>
-                    <div>
-                        <audio controls="controls" autoplay="autoplay" type="audio/mp3" src="http://#{musicBean.IP}:50075/webhdfs/v1/music/#{musicBean.currentSong.songFile}?op=OPEN&amp;namenoderpcaddress=bigdatalite.localdomain:8020">
-                            <h:outputText value="Your browser does not supported."/>
-                        </audio>
-                    </div>
-                </h:form>
-                <h:form id="likes" style="display: #{musicBean.playerStyle}">
-                    <div style="padding-top: 20px">
-                        <h:outputLabel class="like">
-                            <h:selectBooleanCheckbox value="#{musicBean.checkLike}">
-                                <f:ajax event="click" listener="#{musicBean.changeLike}" execute="@form" render=":likes"/>
-                            </h:selectBooleanCheckbox>
-                            <ui:fragment>
-                                <span/>
-                            </ui:fragment>
-                        </h:outputLabel>
-                        <h:outputLabel class="like recommend">
-                            <h:selectBooleanCheckbox value="#{musicBean.checkRecommend}">
-                                <f:ajax event="click" listener="#{musicBean.changeRecommend}" execute="@form" render=":likes"/>
-                            </h:selectBooleanCheckbox>
-                            <ui:fragment>
-                                <span/>
-                            </ui:fragment>
-                        </h:outputLabel>
-                    </div>
-                </h:form>
+                    <h:form id="recommend" style="display: #{musicBean.playerStyle}">
+                        <div id="recommenddiv">
+                            <h:outputText value="Recommendations" style="font-weight: bold;"/>
+                            <div id="recommendlist">
+                                <ui:repeat value="#{musicBean.recommends}" var="recommend">
+                                    <div>
+                                        <h:commandLink action="#{musicBean.changeMusic(recommend)}" value="#{recommend.nameArtist}" class="songslist boldlink">
+                                            <f:ajax execute="@form" render=":player :likes :recommend" />
+                                        </h:commandLink>
+                                         - 
+                                        <h:commandLink action="#{musicBean.changeMusic(recommend)}" value="#{recommend.title}" class="songslist">
+                                            <f:ajax execute="@form" render=":player :likes :recommend" />
+                                        </h:commandLink>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </div>
+                    </h:form>
             </div>
+            
             <div id="listdiv">
                 <h:form id="songslist">
                     <h:inputText value="#{musicBean.query}" class="search" a:placeholder="Enter a artist or title"/>
@@ -76,11 +102,11 @@
                     <ui:repeat value="#{musicBean.songs}" var="song">
                         <div>
                             <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.nameArtist}" class="songslist boldlink">
-                                <f:ajax execute="@form" render=":player :likes" />
+                                <f:ajax execute="@form" render=":player :likes :recommend" />
                             </h:commandLink>
                              - 
                             <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}" class="songslist">
-                                <f:ajax execute="@form" render=":player :likes" />
+                                <f:ajax execute="@form" render=":player :likes :recommend" />
                             </h:commandLink>
                             <h:outputText value="#{musicBean.getSongGenre(song)}" class="genre"/>
                         </div>

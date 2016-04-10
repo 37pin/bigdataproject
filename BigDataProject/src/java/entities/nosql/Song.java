@@ -5,11 +5,13 @@ public class Song {
     private String idSong;
     private int idAlbum;
     private int idGenre;
+    private int idArtist;
     
-    public Song(String idSong, int idAlbum, int idGenre) {
+    public Song(String idSong, int idAlbum, int idGenre, int idArtist) {
         this.idSong = idSong;
         this.idAlbum = idAlbum;
         this.idGenre = idGenre;
+        this.idArtist = idArtist;
     }
 
     public String getIdSong() {
@@ -35,5 +37,17 @@ public class Song {
     public void setIdGenre(int idGenre) {
         this.idGenre = idGenre;
     }
+
+    public int getIdArtist() {
+        return idArtist;
+    }
+
+    public void setIdArtist(int idArtist) {
+        this.idArtist = idArtist;
+    }
     
+    @Override
+    public String toString() {
+        return idSong + " " + idAlbum + " " + idGenre + " " + idArtist;
+    }
 }

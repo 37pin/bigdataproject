@@ -6,7 +6,8 @@ body {
 }
 
 input[type=text].search {
-    width: 500px;
+    width: 65%;
+    margin-left: 5px;
 }
 
 .like input[type=checkbox] {
@@ -36,15 +37,17 @@ input[type=text].search {
 
 a.songslist {
     text-decoration: none;
+    color: #0066E2;
+}
+
+a.songslist:hover {
+    text-decoration: underline;
 }
 
 a.logolink {
     color:inherit;
     text-decoration: none;
-}
-
-a.songslist:hover {
-    text-decoration: underline;
+    color: #0066E2;
 }
 
 a.boldlink {
@@ -75,12 +78,44 @@ a.boldlink {
 
 #listdiv {
     padding: 15px;
+    width: 65%;
+    float: left;
+}
+
+#rightandtop {
+    height: 40%;
 }
 
 #playerdiv {
-    padding: 15px;
+    height: 150px;
+    overflow-y: auto;
+    padding: 15px 15px 0 15px;
+    background-color: #eee;
+}
+
+#likesdiv {
+    padding: 0 15px 0 15px;
+    height: 25px;
+    background-color: #eee;
+}
+
+#recommenddiv {
+    border-top: 1px solid #bbb;
+    padding: 15px 15px 0 15px;
+    background-color: #eee;
+}
+
+#recommendlist {
+    overflow-y: auto;
+    height: 240px;
+}
+
+#right {
     float: right;
-    width: 350px;
+    width: 28%;
+    position: fixed;
+    left: 69%;
+    bottom: 0;
 }
 
 .genre {
