@@ -6,7 +6,7 @@ body {
 }
 
 input[type=text].search {
-    width: 65%;
+    width: 66%;
     margin-left: 5px;
 }
 
@@ -119,7 +119,14 @@ a.boldlink {
 }
 
 .genre {
-    padding-left: 20px;
     color: #777;
     font-size: 15px;
 }
+/*
+.truncate {
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+*/

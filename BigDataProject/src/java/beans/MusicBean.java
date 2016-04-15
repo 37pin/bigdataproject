@@ -1,13 +1,13 @@
 package beans;
 
 import db.hive.PredictionDM;
-import db.hive.SongDescDM;
+import db.oracle.SongDescDM;
 import db.nosql.AlbumDM;
 import db.nosql.GenreDM;
 import db.nosql.LikeDM;
 import db.nosql.SongDM;
 import java.io.Serializable;
-import entities.hive.SongDesc;
+import entities.hdfs.SongDesc;
 import entities.nosql.Like;
 import entities.nosql.Song;
 import java.util.ArrayList;
@@ -78,28 +78,19 @@ public class MusicBean implements Serializable {
         if (query == null) query = "";
         String[] queryWords = query.trim().toLowerCase().split(" ");
         songs = new ArrayList<>();
-        List<SongDesc> songDescs = SongDescDM.getAll();
-        for (SongDesc sd : songDescs) {
-            boolean isExist = true;
-            for (String word : queryWords) {
-                if (!sd.getTitle().trim().toLowerCase().contains(word) && !sd.getNameArtist().trim().toLowerCase().contains(word)) {
-                    isExist = false;
-                    break;
-                }
-            }
-            if (isExist) {
-                if (selectedGenres.length > 0) {
-                    Song song = SongDM.get(sd.getId());
-                    for (int idGenre : selectedGenres) {
-                        if (idGenre == song.getIdGenre()) {
-                            songs.add(sd);
-                            break;
-                        }
+        List<SongDesc> songDescs = SongDescDM.search(queryWords);
+        if (selectedGenres.length > 0) {
+            for (SongDesc sd : songDescs) {
+                Song song = SongDM.get(sd.getId());
+                for (int idGenre : selectedGenres) {
+                    if (idGenre == song.getIdGenre()) {
+                        songs.add(sd);
+                        break;
                     }
-                } else {
-                    songs.add(sd);
                 }
             }
+        } else {
+            songs = songDescs;
         }
     }
     
@@ -152,6 +143,7 @@ public class MusicBean implements Serializable {
     
     private void recommend() {
         recommends.clear();
+        List<String> localRecommends = new ArrayList<String>();
         Song songInfo = SongDM.get(currentSong.getId());
         
         List<String> artistSongs = SongDM.getSongIdsByArtist(songInfo.getIdArtist());
@@ -166,7 +158,7 @@ public class MusicBean implements Serializable {
         int cnt = 0;
         int artistCnt = 0;
         for (Entry<String, Integer> entry : recommendsBySomething.entrySet()) {
-            recommends.add(SongDescDM.get(entry.getKey()));
+            localRecommends.add(entry.getKey());
             if (++artistCnt == 3) {
                 break;
             }
@@ -175,33 +167,35 @@ public class MusicBean implements Serializable {
         List<String> genreSongs = SongDM.getSongIdsByGenre(songInfo.getIdGenre());
         recommendsBySomething.clear();
         for (String idSong : genreSongs) {
-            SongDesc sd = new SongDesc(idSong, null, null, null, 0);
-            if (!idSong.equals(songInfo.getIdSong()) && !recommends.contains(sd) && !likedSongs.contains(idSong)) {
+            if (!idSong.equals(songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
                 recommendsBySomething.put(idSong, LikeDM.getByIdSong(idSong).size());
             }
         }
         recommendsBySomething = sortHashMapByValues(recommendsBySomething);
         int genreCnt = 0;
         for (Entry<String, Integer> entry : recommendsBySomething.entrySet()) {
-            recommends.add(SongDescDM.get(entry.getKey()));
+            localRecommends.add(entry.getKey());
             if (++genreCnt == 4) {
                 break;
             }
         }
         
+        cnt += artistCnt + genreCnt;
+        cnt = 10 - cnt;
         List<String> predictions = PredictionDM.getPredictions(user);
         int predictionCnt = 0;
         for(String idSong : predictions) {
-            SongDesc sd = SongDescDM.get(idSong);
-            if (!idSong.equals(songInfo.getIdSong()) && !recommends.contains(sd) && !likedSongs.contains(idSong)) {
-                recommends.add(sd);
+            if (!idSong.equals(songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
+                localRecommends.add(idSong);
             }
-            if (++predictionCnt == 4) {
+            if (++predictionCnt == cnt) {
                 break;
             }
         }
-        cnt += artistCnt + genreCnt + predictionCnt;
-        cnt = 10 - cnt;
+        
+        for (String idSong : localRecommends) {
+            
+        }
     }
     
     private static HashMap sortHashMapByValues(HashMap map) { 

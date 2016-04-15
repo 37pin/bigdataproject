@@ -66,25 +66,25 @@
                             </h:outputLabel>
                         </div>
                     </h:form>
-                    </div>
-                    <h:form id="recommend" style="display: #{musicBean.playerStyle}">
-                        <div id="recommenddiv">
-                            <h:outputText value="Recommendations" style="font-weight: bold;"/>
-                            <div id="recommendlist">
-                                <ui:repeat value="#{musicBean.recommends}" var="recommend">
-                                    <div>
-                                        <h:commandLink action="#{musicBean.changeMusic(recommend)}" value="#{recommend.nameArtist}" class="songslist boldlink">
-                                            <f:ajax execute="@form" render=":player :likes :recommend" />
-                                        </h:commandLink>
-                                         - 
-                                        <h:commandLink action="#{musicBean.changeMusic(recommend)}" value="#{recommend.title}" class="songslist">
-                                            <f:ajax execute="@form" render=":player :likes :recommend" />
-                                        </h:commandLink>
-                                    </div>
-                                </ui:repeat>
-                            </div>
+                </div>
+                <h:form id="recommend" style="display: #{musicBean.playerStyle}">
+                    <div id="recommenddiv">
+                        <h:outputText value="Recommendations" style="font-weight: bold;"/>
+                        <div id="recommendlist">
+                            <ui:repeat value="#{musicBean.recommends}" var="recommend">
+                                <div>
+                                    <h:commandLink action="#{musicBean.changeMusic(recommend)}" value="#{recommend.nameArtist}" class="songslist boldlink">
+                                        <f:ajax execute="@form" render=":player :likes :recommend" />
+                                    </h:commandLink>
+                                     - 
+                                    <h:commandLink action="#{musicBean.changeMusic(recommend)}" value="#{recommend.title}" class="songslist">
+                                        <f:ajax execute="@form" render=":player :likes :recommend" />
+                                    </h:commandLink>
+                                </div>
+                            </ui:repeat>
                         </div>
-                    </h:form>
+                    </div>
+                </h:form>
             </div>
             
             <div id="listdiv">
@@ -93,14 +93,14 @@
                     <h:commandButton value="Search" actionListener="#{musicBean.search}">
                         <f:ajax execute="@form" render=":songslist" />
                     </h:commandButton>
-                    <div>
+                    <div style="padding-left: 7px">
                         <h:selectManyCheckbox value="#{musicBean.selectedGenres}">
                             <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
                             <f:selectItems value="#{musicBean.genres}"/>
                         </h:selectManyCheckbox>
                     </div>
-                    <ui:repeat value="#{musicBean.songs}" var="song">
-                        <div>
+                    <h:dataTable value="#{musicBean.songs}" var="song" cellpadding="8" class="border: 0px #bbb solid">
+                        <h:column>
                             <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.nameArtist}" class="songslist boldlink">
                                 <f:ajax execute="@form" render=":player :likes :recommend" />
                             </h:commandLink>
@@ -108,9 +108,11 @@
                             <h:commandLink action="#{musicBean.changeMusic(song)}" value="#{song.title}" class="songslist">
                                 <f:ajax execute="@form" render=":player :likes :recommend" />
                             </h:commandLink>
+                        </h:column>
+                        <h:column>
                             <h:outputText value="#{musicBean.getSongGenre(song)}" class="genre"/>
-                        </div>
-                    </ui:repeat>
+                        </h:column>
+                    </h:dataTable>
                 </h:form>
             </div>
         </div>

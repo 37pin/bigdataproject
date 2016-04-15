@@ -2,7 +2,7 @@ setwd("~/r-project/")
 install.packages("RJDBC")
 library(RJDBC)
 oracleDriver <- JDBC("oracle.jdbc.OracleDriver", classPath="C:/Users/parameeva/bigdataproject/statisticR/lib/ojdbc6.jar", " ")
-oracleConnection <- dbConnect(oracleDriver, "jdbc:oracle:thin:@192.168.205.198:1521:cdb", "system","welcome1")
+oracleConnection <- dbConnect(oracleDriver, "jdbc:oracle:thin:@bigdatalite.localdomain:1521:cdb", "system","welcome1")
 
 #select top likes
 topLikes<- dbGetQuery(oracleConnection, "select s.title, s.nameartist, s.year, c.cn from (select idsong, count(*) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong order by c.cn desc")
