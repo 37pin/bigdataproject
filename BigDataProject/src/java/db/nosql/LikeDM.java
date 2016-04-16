@@ -24,17 +24,18 @@ public class LikeDM {
             key.put("email", email);
             key.put("idsong", idSong);
             Row row = tableH.get(key, null);
-            if (row == null) return null;
+            if (row == null) {
+                return null;
+            }
             return new Like(email, idSong, row.get("recommend").asInteger().get());
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid statement:\n" + e.getMessage());
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return null;
     }
-    
+
     public static List<String> getSongsByEmail(String email) {
         List<String> songs = new ArrayList<>();
         try {
@@ -51,12 +52,11 @@ public class LikeDM {
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return songs;
     }
-    
-    public static List<Like> getByIdSong(String idSong) {
-        List<Like> likes = new ArrayList<>();
+
+    public static int getLikesCount(String idSong) {
+        int cnt = 0;
         try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("likes");
@@ -69,12 +69,12 @@ public class LikeDM {
             TableIterator<Row> iterator = tableH.tableIterator(indexKey, multiRowOptions, null);
             try {
                 while (iterator.hasNext()) {
-                    Row row = iterator.next();
-                    likes.add(new Like(row.get("email").asString().get(), idSong, row.get("recommend").asInteger().get()));
-                } 
+                    iterator.next();
+                    cnt++;
+                }
             } finally {
                 if (iterator != null) {
-                    iterator.close(); 
+                    iterator.close();
                 }
             }
         } catch (IllegalArgumentException e) {
@@ -82,12 +82,11 @@ public class LikeDM {
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
-        return likes;
+        return cnt;
     }
-    
+
     public static void insert(String email, String idSong, int recommend) {
-	try {
+        try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("likes");
             Row row = table.createRow();
@@ -95,17 +94,15 @@ public class LikeDM {
             row.put("idsong", idSong);
             row.put("recommend", recommend);
             tableH.put(row, null, null);
-	}
-	catch (IllegalArgumentException e) {
-		System.out.println("Invalid statement:\n" + e.getMessage());
-	}
-	catch (FaultException e) {
-		System.out.println("Statement couldn't be executed, please retry: " + e);
-	}
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid statement:\n" + e.getMessage());
+        } catch (FaultException e) {
+            System.out.println("Statement couldn't be executed, please retry: " + e);
+        }
     }
-    
+
     public static void update(String email, String idSong, int recommend) {
-	try {
+        try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("likes");
             Row row = table.createRow();
@@ -113,30 +110,26 @@ public class LikeDM {
             row.put("idsong", idSong);
             row.put("recommend", recommend);
             tableH.putIfPresent(row, null, null);
-	}
-	catch (IllegalArgumentException e) {
-		System.out.println("Invalid statement:\n" + e.getMessage());
-	}
-	catch (FaultException e) {
-		System.out.println("Statement couldn't be executed, please retry: " + e);
-	}
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid statement:\n" + e.getMessage());
+        } catch (FaultException e) {
+            System.out.println("Statement couldn't be executed, please retry: " + e);
+        }
     }
-    
+
     public static void drop(String email, String idSong) {
-	try {
+        try {
             TableAPI tableH = Store.getStore().getTableAPI();
             Table table = tableH.getTable("likes");
             PrimaryKey key = table.createPrimaryKey();
             key.put("email", email);
             key.put("idsong", idSong);
             tableH.delete(key, null, null);
-	}
-	catch (IllegalArgumentException e) {
-		System.out.println("Invalid statement:\n" + e.getMessage());
-	}
-	catch (FaultException e) {
-		System.out.println("Statement couldn't be executed, please retry: " + e);
-	}
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid statement:\n" + e.getMessage());
+        } catch (FaultException e) {
+            System.out.println("Statement couldn't be executed, please retry: " + e);
+        }
     }
-    
+
 }

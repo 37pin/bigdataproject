@@ -24,7 +24,6 @@ public class ArtistDM {
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return null;
     }
 

@@ -6,7 +6,7 @@ body {
 }
 
 input[type=text].search {
-    width: 66%;
+    width: 64%;
     margin-left: 5px;
 }
 
@@ -82,12 +82,28 @@ a.boldlink {
     float: left;
 }
 
-#rightandtop {
-    height: 40%;
+#right {
+    float: right;
+    width: 380px;
+    margin: 15px 43px 0 0;
+    height: 300px;
+    overflow-y: auto;
+}
+
+#recommenddiv {
+    background-color: #eee;
+    padding: 10px 15px 10px 15px;
+}
+
+#fixedpart {
+    width: 380px;
+    position: fixed;
+    right: 50px;
+    bottom: 0;
 }
 
 #playerdiv {
-    height: 150px;
+    height: 180px;
     overflow-y: auto;
     padding: 15px 15px 0 15px;
     background-color: #eee;
@@ -99,34 +115,14 @@ a.boldlink {
     background-color: #eee;
 }
 
-#recommenddiv {
-    border-top: 1px solid #bbb;
-    padding: 15px 15px 0 15px;
-    background-color: #eee;
-}
-
-#recommendlist {
-    overflow-y: auto;
-    height: 240px;
-}
-
-#right {
-    float: right;
-    width: 28%;
-    position: fixed;
-    left: 69%;
-    bottom: 0;
-}
-
 .genre {
     color: #777;
     font-size: 15px;
 }
-/*
+
 .truncate {
-  width: 250px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    width: 565px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-*/

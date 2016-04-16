@@ -1,11 +1,11 @@
 package entities.nosql;
 
 public class Like {
-    
+
     private String email;
     private String idSong;
     private int recommend;
-    
+
     public Like(String email, String idSong, int recommend) {
         this.email = email;
         this.idSong = idSong;
@@ -35,10 +35,10 @@ public class Like {
     public void setRecommend(int recommend) {
         this.recommend = recommend;
     }
-    
+
     @Override
     public String toString() {
         return getEmail() + (getRecommend() == 1 ? " recommend " : " not recommend ") + getIdSong();
     }
-    
+
 }

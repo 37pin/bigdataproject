@@ -12,8 +12,7 @@ public class PredictionDM {
         List<String> songs = new ArrayList<>();
         try {
             Statement statement = HiveConnection.getStatement();
-            String tableName = "predictions";
-            String sql = "select idsong from " + tableName + " where email = '" + email + "'";
+            String sql = "select idsong from predictions where email = '" + email + "'";
             ResultSet result = statement.executeQuery(sql);
             while (result.next()) {
                 songs.add(result.getString(1));

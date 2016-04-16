@@ -1,12 +1,12 @@
 package entities.nosql;
 
 public class Song {
-    
+
     private String idSong;
     private int idAlbum;
     private int idGenre;
     private int idArtist;
-    
+
     public Song(String idSong, int idAlbum, int idGenre, int idArtist) {
         this.idSong = idSong;
         this.idAlbum = idAlbum;
@@ -45,7 +45,7 @@ public class Song {
     public void setIdArtist(int idArtist) {
         this.idArtist = idArtist;
     }
-    
+
     @Override
     public String toString() {
         return idSong + " " + idAlbum + " " + idGenre + " " + idArtist;

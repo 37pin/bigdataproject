@@ -11,7 +11,7 @@ public class OracleConnection {
     private static Connection connection;
     private static Statement statement;
 
-    public static Statement getStatement(){
+    public static Statement getStatement() {
         if (statement == null) {
             try {
                 if (connection == null) {
@@ -25,17 +25,17 @@ public class OracleConnection {
         }
         return statement;
     }
-    
+
     public static String realEscapeString(String string) {
         return string.replace('\\', ' ')
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
                 .replace("\'", "\\'")
                 .replace("\"", "\\\"")
-                .replace((char)26, ' ')
-                .replace((char)0, ' ');
+                .replace((char) 26, ' ')
+                .replace((char) 0, ' ');
     }
-    
+
     public static void close() {
         try {
             if (statement != null) {
@@ -50,5 +50,5 @@ public class OracleConnection {
             e.printStackTrace();
         }
     }
-    
+
 }

@@ -1,11 +1,13 @@
 package beans;
 
+import db.hive.HiveConnection;
 import db.hive.PredictionDM;
-import db.oracle.SongDescDM;
+import db.hive.SongDescDM;
 import db.nosql.AlbumDM;
 import db.nosql.GenreDM;
 import db.nosql.LikeDM;
 import db.nosql.SongDM;
+import db.nosql.Store;
 import java.io.Serializable;
 import entities.hdfs.SongDesc;
 import entities.nosql.Like;
@@ -28,22 +30,35 @@ import javax.faces.bean.SessionScoped;
 public class MusicBean implements Serializable {
 
     private List<SongDesc> songs;
-    private List<SongDesc> recommends;
+    private List<SongDesc> recommendsByArtist;
+    private List<SongDesc> recommendsByGenre;
+    private List<SongDesc> personalRecommends;
     private SongDesc currentSong;
     private String query;
     private int[] selectedGenres;
     private boolean checkLike;
     private boolean checkRecommend;
     private String playerStyle;
+    private String recommendStyle;
+    private String recommendsByArtistStyle;
+    private String recommendsByGenreStyle;
+    private String personalRecommendsStyle;
     public String user;
 
     public MusicBean() {
         songs = SongDescDM.getAll();
-        recommends = new ArrayList<>();
+        recommendsByArtist = new ArrayList<>();
+        recommendsByGenre = new ArrayList<>();
+        personalRecommends = new ArrayList<>();
         playerStyle = "none";
+        recommendStyle = "inline";
+        recommendsByArtistStyle = "none";
+        recommendsByGenreStyle = "none";
+        personalRecommendsStyle = "none";
         user = "test@test.com";
+        recommend();
     }
-    
+
     public void changeLike() {
         if (checkLike) {
             if (LikeDM.get(user, currentSong.getId()) == null) {
@@ -54,7 +69,7 @@ public class MusicBean implements Serializable {
             setCheckRecommend(false);
         }
     }
-    
+
     public void changeRecommend() {
         if (checkRecommend) {
             Like like = LikeDM.get(user, currentSong.getId());
@@ -67,15 +82,15 @@ public class MusicBean implements Serializable {
                 like.setRecommend(1);
                 LikeDM.update(like.getEmail(), like.getIdSong(), like.getRecommend());
             }
-        } else {
-            if (LikeDM.get(user, currentSong.getId()) != null) {
-                LikeDM.update(user, currentSong.getId(), 0);
-            }
+        } else if (LikeDM.get(user, currentSong.getId()) != null) {
+            LikeDM.update(user, currentSong.getId(), 0);
         }
     }
-    
+
     public void search() {
-        if (query == null) query = "";
+        if (query == null) {
+            query = "";
+        }
         String[] queryWords = query.trim().toLowerCase().split(" ");
         songs = new ArrayList<>();
         List<SongDesc> songDescs = SongDescDM.search(queryWords);
@@ -93,20 +108,22 @@ public class MusicBean implements Serializable {
             songs = songDescs;
         }
     }
-    
+
     public String getSongGenre(SongDesc songDesc) {
         return GenreDM.get(SongDM.get(songDesc.getId()).getIdGenre());
     }
-    
+
     public String getSongAlbum(SongDesc songDesc) {
-        if (songDesc == null) return null;
+        if (songDesc == null) {
+            return null;
+        }
         return AlbumDM.get(SongDM.get(songDesc.getId()).getIdAlbum());
     }
-    
+
     public List<SongDesc> getSongs() {
         return songs;
     }
-    
+
     public void setSongs(List<SongDesc> songs) {
         this.songs = songs;
     }
@@ -122,7 +139,7 @@ public class MusicBean implements Serializable {
     public int[] getSelectedGenres() {
         return selectedGenres;
     }
-    
+
     public void setSelectedGenres(int[] selectedGenres) {
         this.selectedGenres = selectedGenres;
     }
@@ -137,81 +154,105 @@ public class MusicBean implements Serializable {
 
     public void changeMusic(SongDesc songDesc) {
         currentSong = songDesc;
-        setPlayerStyle(currentSong != null ? "inline" : "none");
+        playerStyle = currentSong != null ? "inline" : "none";
         recommend();
     }
-    
+
     private void recommend() {
-        recommends.clear();
-        List<String> localRecommends = new ArrayList<String>();
-        Song songInfo = SongDM.get(currentSong.getId());
-        
-        List<String> artistSongs = SongDM.getSongIdsByArtist(songInfo.getIdArtist());
-        List<String> likedSongs = LikeDM.getSongsByEmail(user);
-        HashMap<String, Integer> recommendsBySomething = new HashMap<>();
-        for (String idSong : artistSongs) {
-            if (!likedSongs.contains(idSong) && !idSong.equals(songInfo.getIdSong())) {
-                recommendsBySomething.put(idSong, LikeDM.getByIdSong(idSong).size());
-            }
-        }
-        recommendsBySomething = sortHashMapByValues(recommendsBySomething);
+        List<String> localRecommends = new ArrayList<>();
+        List<String> likedSongs = new ArrayList<>();
+        HashMap<String, Integer> recommendsByArtistMap = new HashMap<>();
+        HashMap<String, Integer> recommendsByGenreMap = new HashMap<>();
         int cnt = 0;
-        int artistCnt = 0;
-        for (Entry<String, Integer> entry : recommendsBySomething.entrySet()) {
-            localRecommends.add(entry.getKey());
-            if (++artistCnt == 3) {
-                break;
+        Song songInfo = null;
+        if (currentSong != null) {
+            songInfo = SongDM.get(currentSong.getId());
+
+            likedSongs = LikeDM.getSongsByEmail(user);
+            List<String> artistSongs = SongDM.getSongIdsByArtist(songInfo.getIdArtist());
+            for (String idSong : artistSongs) {
+                if (!likedSongs.contains(idSong) && !idSong.equals(songInfo.getIdSong())) {
+                    recommendsByArtistMap.put(idSong, LikeDM.getLikesCount(idSong));
+                }
             }
-        }
-        
-        List<String> genreSongs = SongDM.getSongIdsByGenre(songInfo.getIdGenre());
-        recommendsBySomething.clear();
-        for (String idSong : genreSongs) {
-            if (!idSong.equals(songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
-                recommendsBySomething.put(idSong, LikeDM.getByIdSong(idSong).size());
+            recommendsByArtistMap = sortHashMapByValues(recommendsByArtistMap, 3);
+            for (Entry<String, Integer> entry : recommendsByArtistMap.entrySet()) {
+                localRecommends.add(entry.getKey());
             }
-        }
-        recommendsBySomething = sortHashMapByValues(recommendsBySomething);
-        int genreCnt = 0;
-        for (Entry<String, Integer> entry : recommendsBySomething.entrySet()) {
-            localRecommends.add(entry.getKey());
-            if (++genreCnt == 4) {
-                break;
+
+            List<String> genreSongs = SongDM.getSongIdsByGenre(songInfo.getIdGenre());
+            for (String idSong : genreSongs) {
+                if (!idSong.equals(songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
+                    recommendsByGenreMap.put(idSong, LikeDM.getLikesCount(idSong));
+                }
             }
+            recommendsByGenreMap = sortHashMapByValues(recommendsByGenreMap, 4);
+            for (Entry<String, Integer> entry : recommendsByGenreMap.entrySet()) {
+                localRecommends.add(entry.getKey());
+            }
+
+            cnt += recommendsByArtistMap.size() + recommendsByGenreMap.size();
         }
-        
-        cnt += artistCnt + genreCnt;
         cnt = 10 - cnt;
         List<String> predictions = PredictionDM.getPredictions(user);
         int predictionCnt = 0;
-        for(String idSong : predictions) {
-            if (!idSong.equals(songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
+        for (String idSong : predictions) {
+            if (!idSong.equals(songInfo == null ? null : songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
                 localRecommends.add(idSong);
-            }
-            if (++predictionCnt == cnt) {
-                break;
+                if (++predictionCnt == cnt) {
+                    break;
+                }
             }
         }
-        
-        for (String idSong : localRecommends) {
-            
+
+        recommendsByArtist.clear();
+        recommendsByGenre.clear();
+        personalRecommends.clear();
+        if (localRecommends.isEmpty()) {
+            recommendStyle = "none";
+            return;
         }
+        recommendStyle = "inline";
+        List<SongDesc> songDescList = SongDescDM.multiGet(localRecommends);
+        for (SongDesc songDesc : songDescList) {
+            if (recommendsByArtistMap.get(songDesc.getId()) != null) {
+                recommendsByArtist.add(songDesc);
+            } else if (recommendsByGenreMap.get(songDesc.getId()) != null) {
+                recommendsByGenre.add(songDesc);
+            } else {
+                personalRecommends.add(songDesc);
+            }
+        }
+        recommendsByArtistStyle = recommendsByArtist.isEmpty() ? "none" : "inline";
+        recommendsByGenreStyle = recommendsByGenre.isEmpty() ? "none" : "inline";
+        personalRecommendsStyle = personalRecommends.isEmpty() ? "none" : "inline";
     }
-    
-    private static HashMap sortHashMapByValues(HashMap map) { 
-       List list = new LinkedList(map.entrySet());
-       Collections.sort(list, new Comparator() {
+
+    private static HashMap sortHashMapByValues(HashMap map, int limit) {
+        List list = new LinkedList(map.entrySet());
+        Collections.sort(list, new Comparator() {
             public int compare(Object o1, Object o2) {
-               return ((Comparable) ((Map.Entry) (o2)).getValue())
-                  .compareTo(((Map.Entry) (o1)).getValue());
+                return ((Comparable) ((Map.Entry) (o2)).getValue())
+                        .compareTo(((Map.Entry) (o1)).getValue());
             }
-       });
-       HashMap sortedHashMap = new LinkedHashMap();
-       for (Iterator it = list.iterator(); it.hasNext();) {
-              Map.Entry entry = (Map.Entry) it.next();
-              sortedHashMap.put(entry.getKey(), entry.getValue());
-       } 
-       return sortedHashMap;
+        });
+        HashMap sortedHashMap = new LinkedHashMap();
+        if (limit <= 0) {
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                Map.Entry entry = (Map.Entry) it.next();
+                sortedHashMap.put(entry.getKey(), entry.getValue());
+            }
+        } else {
+            int cnt = 0;
+            for (Iterator it = list.iterator(); it.hasNext();) {
+                Map.Entry entry = (Map.Entry) it.next();
+                sortedHashMap.put(entry.getKey(), entry.getValue());
+                if (++cnt == limit) {
+                    break;
+                }
+            }
+        }
+        return sortedHashMap;
     }
 
     public String getQuery() {
@@ -223,7 +264,9 @@ public class MusicBean implements Serializable {
     }
 
     public boolean isCheckLike() {
-        if (currentSong == null) return false;
+        if (currentSong == null) {
+            return false;
+        }
         return LikeDM.get(user, currentSong.getId()) != null;
     }
 
@@ -232,10 +275,32 @@ public class MusicBean implements Serializable {
     }
 
     public boolean isCheckRecommend() {
-        if (currentSong == null) return false;
+        if (currentSong == null) {
+            return false;
+        }
         Like like = LikeDM.get(user, currentSong.getId());
-        if (like == null) return false;
+        if (like == null) {
+            return false;
+        }
         return like.getRecommend() == 1;
+    }
+
+    public void clear() {
+        songs = SongDescDM.getAll();
+        recommendsByArtist = new ArrayList<>();
+        recommendsByGenre = new ArrayList<>();
+        personalRecommends = new ArrayList<>();
+        playerStyle = "none";
+        recommendStyle = "inline";
+        recommendsByArtistStyle = "none";
+        recommendsByGenreStyle = "none";
+        personalRecommendsStyle = "none";
+        query = null;
+        selectedGenres = null;
+        currentSong = null;
+        recommend();
+        Store.closeStore();
+        HiveConnection.close();
     }
 
     public void setCheckRecommend(boolean recommend) {
@@ -250,21 +315,60 @@ public class MusicBean implements Serializable {
         this.playerStyle = playerStyle;
     }
 
-    public List<SongDesc> getRecommends() {
-        return recommends;
+    public List<SongDesc> getRecommendsByArtist() {
+        return recommendsByArtist;
     }
 
-    public void setRecommends(List<SongDesc> recommends) {
-        this.recommends = recommends;
+    public void setRecommendsByArtist(List<SongDesc> recommendsByArtist) {
+        this.recommendsByArtist = recommendsByArtist;
     }
-    
-    public void clear() {
-        songs = SongDescDM.getAll();
-        recommends = new ArrayList<>();
-        playerStyle = "none";
-        query = null;
-        selectedGenres = null;
-        currentSong = null;
+
+    public List<SongDesc> getRecommendsByGenre() {
+        return recommendsByGenre;
+    }
+
+    public void setRecommendsByGenre(List<SongDesc> recommendsByGenre) {
+        this.recommendsByGenre = recommendsByGenre;
+    }
+
+    public List<SongDesc> getPersonalRecommends() {
+        return personalRecommends;
+    }
+
+    public void setPersonalRecommends(List<SongDesc> personalRecommends) {
+        this.personalRecommends = personalRecommends;
+    }
+
+    public String getRecommendStyle() {
+        return recommendStyle;
+    }
+
+    public void setRecommendStyle(String recommendStyle) {
+        this.recommendStyle = recommendStyle;
+    }
+
+    public String getRecommendsByArtistStyle() {
+        return recommendsByArtistStyle;
+    }
+
+    public void setRecommendsByArtistStyle(String recommendsByArtistStyle) {
+        this.recommendsByArtistStyle = recommendsByArtistStyle;
+    }
+
+    public String getRecommendsByGenreStyle() {
+        return recommendsByGenreStyle;
+    }
+
+    public void setRecommendsByGenreStyle(String recommendsByGenreStyle) {
+        this.recommendsByGenreStyle = recommendsByGenreStyle;
+    }
+
+    public String getPersonalRecommendsStyle() {
+        return personalRecommendsStyle;
+    }
+
+    public void setPersonalRecommendsStyle(String personalRecommendsStyle) {
+        this.personalRecommendsStyle = personalRecommendsStyle;
     }
 
 }

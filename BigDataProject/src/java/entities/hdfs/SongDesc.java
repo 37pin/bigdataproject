@@ -62,7 +62,7 @@ public class SongDesc {
     public String toString() {
         return nameArtist + " - " + title;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -87,5 +87,5 @@ public class SongDesc {
         }
         return true;
     }
-    
+
 }

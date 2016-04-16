@@ -10,7 +10,7 @@ import java.util.List;
 public class SongDescDM {
 
     public static final String IP = "192.168.206.17";
-    
+
     public static List<SongDesc> getAll() {
         List<SongDesc> allSongDescs = new ArrayList<>();
         try {
@@ -21,13 +21,12 @@ public class SongDescDM {
                 allSongDescs.add(new SongDesc(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getInt(5)));
             }
             result.close();
-            OracleConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return allSongDescs;
     }
-    
+
     public static List<SongDesc> search(String[] queryWords) {
         List<SongDesc> result = new ArrayList<>();
         try {
@@ -47,13 +46,12 @@ public class SongDescDM {
                 result.add(new SongDesc(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5)));
             }
             resultSet.close();
-            OracleConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
-    
+
     public static SongDesc get(String idSong) {
         try {
             Statement statement = OracleConnection.getStatement();
@@ -63,11 +61,35 @@ public class SongDescDM {
                 return new SongDesc(idSong, result.getString(1), result.getString(2), result.getString(3), result.getInt(4));
             }
             result.close();
-            OracleConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static List<SongDesc> multiGet(List<String> idSongs) {
+        List<SongDesc> songDescs = new ArrayList<>();
+        if (idSongs.isEmpty()) {
+            return songDescs;
+        }
+        try {
+            Statement statement = OracleConnection.getStatement();
+            StringBuilder sql = new StringBuilder("SELECT * FROM songsdesc_hive");
+            for (int i = 0; i < idSongs.size(); i++) {
+                if (i != 0) {
+                    sql.append(" OR");
+                }
+                sql.append(" idsong = '").append(idSongs.get(i)).append('\'');
+            }
+            ResultSet result = statement.executeQuery(sql.toString());
+            while (result.next()) {
+                songDescs.add(new SongDesc(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getInt(5)));
+            }
+            result.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return songDescs;
     }
 
 }

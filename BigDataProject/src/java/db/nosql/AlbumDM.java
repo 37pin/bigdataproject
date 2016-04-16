@@ -15,15 +15,16 @@ public class AlbumDM {
             PrimaryKey key = table.createPrimaryKey();
             key.put("idalbum", idAlbum);
             Row row = tableH.get(key, null);
-            if (row == null) return null;
+            if (row == null) {
+                return null;
+            }
             return row.get("title").asString().get();
         } catch (IllegalArgumentException e) {
             System.out.println("Invalid statement:\n" + e.getMessage());
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return null;
     }
-    
+
 }

@@ -11,6 +11,7 @@ import java.util.List;
 public class SongDescDM {
 
     public static final String IP = "192.168.206.17";
+    private static final int CACHE_SIZE = 500;
     private static HashMap<String, SongDesc> cache = new HashMap<>();
 
     public static List<SongDesc> getAll() {
@@ -23,13 +24,12 @@ public class SongDescDM {
                 allSongDescs.add(new SongDesc(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getInt(5)));
             }
             result.close();
-            HiveConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return allSongDescs;
     }
-    
+
     public static List<SongDesc> search(String[] queryWords) {
         List<SongDesc> result = new ArrayList<>();
         try {
@@ -49,17 +49,16 @@ public class SongDescDM {
                 result.add(new SongDesc(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5)));
             }
             resultSet.close();
-            HiveConnection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return result;
     }
-    
+
     public static SongDesc get(String idSong) {
         SongDesc songDesc = cache.get(idSong);
         if (songDesc == null) {
-            if (cache.size() == 500) {
+            if (cache.size() >= CACHE_SIZE) {
                 cache.clear();
             }
             try {
@@ -71,35 +70,52 @@ public class SongDescDM {
                     cache.put(idSong, songDesc);
                 }
                 result.close();
-                HiveConnection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return songDesc;
     }
-    
-    public static SongDesc multiGet(List<String> idSong) {
-        SongDesc songDesc = cache.get(idSong);
-        if (songDesc == null) {
-            if (cache.size() == 500) {
+
+    public static List<SongDesc> multiGet(List<String> idSongs) {
+        List<SongDesc> songDescs = new ArrayList<>();
+        if (idSongs.isEmpty()) {
+            return songDescs;
+        }
+        List<String> loadedSongs = new ArrayList<>();
+        for (String idSong : idSongs) {
+            SongDesc songDesc = cache.get(idSong);
+            if (songDesc == null) {
+                loadedSongs.add(idSong);
+            } else {
+                songDescs.add(songDesc);
+            }
+        }
+        if (!loadedSongs.isEmpty()) {
+            if (cache.size() >= CACHE_SIZE) {
                 cache.clear();
             }
             try {
                 Statement statement = HiveConnection.getStatement();
-                String sql = "SELECT namefile, nameartist, title, year FROM songsdesc_hdfs WHERE idsong = '" + idSong + "'";
-                ResultSet result = statement.executeQuery(sql);
+                StringBuilder sql = new StringBuilder("SELECT * FROM songsdesc_hdfs WHERE");
+                for (int i = 0; i < loadedSongs.size(); i++) {
+                    if (i != 0) {
+                        sql.append(" OR");
+                    }
+                    sql.append(" idsong = '").append(loadedSongs.get(i)).append('\'');
+                }
+                ResultSet result = statement.executeQuery(sql.toString());
                 while (result.next()) {
-                    songDesc = new SongDesc(idSong, result.getString(1), result.getString(2), result.getString(3), result.getInt(4));
-                    cache.put(idSong, songDesc);
+                    SongDesc songDesc = new SongDesc(result.getString(1), result.getString(2), result.getString(3), result.getString(4), result.getInt(5));
+                    songDescs.add(songDesc);
+                    cache.put(songDesc.getId(), songDesc);
                 }
                 result.close();
-                HiveConnection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return songDesc;
+        return songDescs;
     }
 
 }

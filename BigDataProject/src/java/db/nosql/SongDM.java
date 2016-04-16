@@ -32,7 +32,6 @@ public class SongDM {
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return null;
     }
 
@@ -63,10 +62,9 @@ public class SongDM {
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return songs;
     }
-    
+
     public static List<String> getSongIdsByGenre(int idGenre) {
         List<String> songs = new ArrayList<>();
         try {
@@ -94,7 +92,6 @@ public class SongDM {
         } catch (FaultException e) {
             System.out.println("Statement couldn't be executed, please retry: " + e);
         }
-        Store.closeStore();
         return songs;
     }
 }
