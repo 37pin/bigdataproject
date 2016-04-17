@@ -1,6 +1,6 @@
 package db.nosql;
 
-import entities.nosql.Like;
+import entities.Like;
 import java.util.ArrayList;
 import java.util.List;
 import oracle.kv.FaultException;

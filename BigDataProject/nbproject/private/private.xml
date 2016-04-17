@@ -4,8 +4,8 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/ucorp/Documents/bigdataproject/BigDataProject/src/java/beans/MusicBean.java</file>
-            <file>file:/C:/Users/ucorp/Documents/bigdataproject/BigDataProject/src/java/db/hive/SongDescDM.java</file>
-            <file>file:/C:/Users/ucorp/Documents/bigdataproject/BigDataProject/web/index.xhtml</file>
+            <file>file:/C:/Users/ucorp/Documents/bigdataproject/BigDataProject/web/main.xhtml</file>
+            <file>file:/C:/Users/ucorp/Documents/bigdataproject/BigDataProject/web/resources/css/style.css</file>
         </group>
     </open-files>
 </project-private>

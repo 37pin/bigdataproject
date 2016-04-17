@@ -1,6 +1,6 @@
 package db.hive;
 
-import entities.hdfs.SongDesc;
+import entities.SongDesc;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.Statement;

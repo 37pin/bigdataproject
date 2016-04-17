@@ -1,4 +1,4 @@
-package entities.nosql;
+package entities;
 
 public class Song {
 

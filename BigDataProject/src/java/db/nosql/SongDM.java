@@ -1,6 +1,6 @@
 package db.nosql;
 
-import entities.nosql.Song;
+import entities.Song;
 import java.util.ArrayList;
 import java.util.List;
 import oracle.kv.FaultException;

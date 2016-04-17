@@ -5,9 +5,46 @@ body {
     font-size: 17px;
 }
 
-input[type=text].search {
-    width: 64%;
-    margin-left: 5px;
+.headline {
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 7%;
+    margin-bottom: 10px;
+}
+
+.search,
+.auth,
+.edge {
+    padding: 7px;
+    border: 1px solid #bbb;
+}
+
+.search {
+    width: 555px;
+    margin: 0 0 0 5px;
+    border-right: 0;
+}
+
+.auth {
+    margin: 0 0 10px 0;
+    width: 310px;
+}
+
+.input-box {
+    height: 70px;
+    width: 100%;
+    height: 30px;
+}
+
+.action,
+.login {
+    height: 33px;
+    width: 55px;
+}
+
+.action {
+    margin: 0;
+    border: 1px solid #bbb;
 }
 
 .like input[type=checkbox] {
@@ -35,48 +72,65 @@ input[type=text].search {
     background-image: url("#{resource['icons/recommended.png']}");
 }
 
-a.songslist {
+.songs-list {
     text-decoration: none;
     color: #0066E2;
 }
 
-a.songslist:hover {
+.songs-list:hover {
     text-decoration: underline;
 }
 
-a.logolink {
+.logo-link {
     color:inherit;
     text-decoration: none;
     color: #0066E2;
-}
-
-a.boldlink {
-    font-weight: bold;
-}
-
-#header {
-    width: 99%;
-    text-align: center;
-    border-bottom: 1px #bbb solid;
-    padding: 10px;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: 200;
     font-size: 35px;
 }
 
+.bold-link {
+    font-weight: bold;
+}
+
+#index-header,
+#header {
+    width: 99%;
+    border-bottom: 1px #bbb solid;
+    padding: 10px;
+}
+
+#index-header {
+    text-align: center;
+}
+
+.index {
+    text-align: center;
+}
+
+#logo-box {
+    margin: 0 auto;
+    width: 170px;
+}
+
+#user-info {
+    float: right;
+    width: 120px;
+    text-align: right;
+}
+
 #logo {
     background: url("#{resource['icons/logo.png']}") no-repeat left center;
     background-size: 64px 64px;
-    padding-left: 64px;
-    padding-top: 15px;
-    padding-right: 10px
+    padding: 15px 10px 0 64px;
 }
 
 #container {
     width: 100%;
 }
 
-#listdiv {
+#list-box {
     padding: 15px;
     width: 65%;
     float: left;
@@ -90,27 +144,27 @@ a.boldlink {
     overflow-y: auto;
 }
 
-#recommenddiv {
+#recommend-box {
     background-color: #eee;
-    padding: 10px 15px 10px 15px;
+    padding: 10px 15px;
 }
 
-#fixedpart {
+#fixed-part {
     width: 380px;
     position: fixed;
     right: 50px;
     bottom: 0;
 }
 
-#playerdiv {
-    height: 180px;
+#player-box {
+    height: auto;
     overflow-y: auto;
-    padding: 15px 15px 0 15px;
+    padding: 15px 15px 0;
     background-color: #eee;
 }
 
-#likesdiv {
-    padding: 0 15px 0 15px;
+#likes-box {
+    padding: 15px 15px 0;
     height: 25px;
     background-color: #eee;
 }
@@ -125,4 +179,9 @@ a.boldlink {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.error {
+    color: red;
+    margin-top: 15px;
 }

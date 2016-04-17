@@ -1,6 +1,6 @@
 package db.hdfs;
 
-import entities.hdfs.SongDesc;
+import entities.SongDesc;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;

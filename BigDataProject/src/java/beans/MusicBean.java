@@ -9,9 +9,10 @@ import db.nosql.LikeDM;
 import db.nosql.SongDM;
 import db.nosql.Store;
 import java.io.Serializable;
-import entities.hdfs.SongDesc;
-import entities.nosql.Like;
-import entities.nosql.Song;
+import entities.SongDesc;
+import entities.Like;
+import entities.Profile;
+import entities.Song;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,7 +44,7 @@ public class MusicBean implements Serializable {
     private String recommendsByArtistStyle;
     private String recommendsByGenreStyle;
     private String personalRecommendsStyle;
-    public String user;
+    private Profile user;
 
     public MusicBean() {
         songs = SongDescDM.getAll();
@@ -55,26 +56,28 @@ public class MusicBean implements Serializable {
         recommendsByArtistStyle = "none";
         recommendsByGenreStyle = "none";
         personalRecommendsStyle = "none";
-        user = "test@test.com";
+        user = SessionBean.getUser();
         recommend();
     }
 
     public void changeLike() {
+        String email = user.getEmail();
         if (checkLike) {
-            if (LikeDM.get(user, currentSong.getId()) == null) {
-                LikeDM.insert(user, currentSong.getId(), 0);
+            if (LikeDM.get(email, currentSong.getId()) == null) {
+                LikeDM.insert(email, currentSong.getId(), 0);
             }
         } else {
-            LikeDM.drop(user, currentSong.getId());
+            LikeDM.drop(email, currentSong.getId());
             setCheckRecommend(false);
         }
     }
 
     public void changeRecommend() {
+        String email = user.getEmail();
         if (checkRecommend) {
-            Like like = LikeDM.get(user, currentSong.getId());
+            Like like = LikeDM.get(email, currentSong.getId());
             if (like == null) {
-                LikeDM.insert(user, currentSong.getId(), 1);
+                LikeDM.insert(email, currentSong.getId(), 1);
                 setCheckLike(true);
                 return;
             }
@@ -82,8 +85,8 @@ public class MusicBean implements Serializable {
                 like.setRecommend(1);
                 LikeDM.update(like.getEmail(), like.getIdSong(), like.getRecommend());
             }
-        } else if (LikeDM.get(user, currentSong.getId()) != null) {
-            LikeDM.update(user, currentSong.getId(), 0);
+        } else if (LikeDM.get(email, currentSong.getId()) != null) {
+            LikeDM.update(email, currentSong.getId(), 0);
         }
     }
 
@@ -168,7 +171,7 @@ public class MusicBean implements Serializable {
         if (currentSong != null) {
             songInfo = SongDM.get(currentSong.getId());
 
-            likedSongs = LikeDM.getSongsByEmail(user);
+            likedSongs = LikeDM.getSongsByEmail(user.getEmail());
             List<String> artistSongs = SongDM.getSongIdsByArtist(songInfo.getIdArtist());
             for (String idSong : artistSongs) {
                 if (!likedSongs.contains(idSong) && !idSong.equals(songInfo.getIdSong())) {
@@ -194,7 +197,7 @@ public class MusicBean implements Serializable {
             cnt += recommendsByArtistMap.size() + recommendsByGenreMap.size();
         }
         cnt = 10 - cnt;
-        List<String> predictions = PredictionDM.getPredictions(user);
+        List<String> predictions = PredictionDM.get(user.getEmail());
         int predictionCnt = 0;
         for (String idSong : predictions) {
             if (!idSong.equals(songInfo == null ? null : songInfo.getIdSong()) && !localRecommends.contains(idSong) && !likedSongs.contains(idSong)) {
@@ -267,7 +270,7 @@ public class MusicBean implements Serializable {
         if (currentSong == null) {
             return false;
         }
-        return LikeDM.get(user, currentSong.getId()) != null;
+        return LikeDM.get(user.getEmail(), currentSong.getId()) != null;
     }
 
     public void setCheckLike(boolean like) {
@@ -278,7 +281,7 @@ public class MusicBean implements Serializable {
         if (currentSong == null) {
             return false;
         }
-        Like like = LikeDM.get(user, currentSong.getId());
+        Like like = LikeDM.get(user.getEmail(), currentSong.getId());
         if (like == null) {
             return false;
         }
@@ -369,6 +372,14 @@ public class MusicBean implements Serializable {
 
     public void setPersonalRecommendsStyle(String personalRecommendsStyle) {
         this.personalRecommendsStyle = personalRecommendsStyle;
+    }
+
+    public Profile getUser() {
+        return user;
+    }
+
+    public void setUser(Profile user) {
+        this.user = user;
     }
 
 }

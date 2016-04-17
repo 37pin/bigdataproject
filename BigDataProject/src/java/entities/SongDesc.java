@@ -1,4 +1,4 @@
-package entities.hdfs;
+package entities;
 
 import java.util.Objects;
 
