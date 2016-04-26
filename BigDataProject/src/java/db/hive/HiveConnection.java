@@ -35,7 +35,7 @@ public class HiveConnection {
                 .replace((char) 26, ' ')
                 .replace((char) 0, ' ');
     }
-
+    
     public static void close() {
         try {
             if (statement != null) {

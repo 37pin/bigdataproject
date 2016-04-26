@@ -5,7 +5,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
-        <title>Music</title>
+        <title>Music — Sign in</title>
         <h:outputStylesheet name="css/style.css"/>
         <f:metadata>
             <f:viewAction action="#{loginBean.clear}"/>
@@ -19,7 +19,7 @@
             </h:link>
         </div>
         <div class="index">
-            <div class="headline">Sing in</div>
+            <div class="headline">Sign in</div>
             <h:form>
                 <div>
                     <h:inputText value="#{loginBean.email}" a:placeholder="E-mail" class="auth"/>
@@ -27,7 +27,7 @@
                 <div>
                     <h:inputSecret value="#{loginBean.password}" a:placeholder="Password" class="auth"/>
                 </div>
-                <h:commandButton value="Sing in" action="#{loginBean.validate}" class="login"/>
+                <h:commandButton value="Sign in" action="#{loginBean.validate}" class="login"/>
             </h:form>
             <div class="error">
                 <h:outputText value="#{loginBean.message}"/>

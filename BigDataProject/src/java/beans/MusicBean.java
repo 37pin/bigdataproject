@@ -7,7 +7,7 @@ import db.nosql.AlbumDM;
 import db.nosql.GenreDM;
 import db.nosql.LikeDM;
 import db.nosql.SongDM;
-import db.nosql.Store;
+import db.oracle.OracleSongDescDM;
 import java.io.Serializable;
 import entities.SongDesc;
 import entities.Like;
@@ -44,19 +44,25 @@ public class MusicBean implements Serializable {
     private String recommendsByArtistStyle;
     private String recommendsByGenreStyle;
     private String personalRecommendsStyle;
+    private String sortStyle;
     private Profile user;
+    private String sort;
+    private int offset; 
 
     public MusicBean() {
-        songs = SongDescDM.getAll();
         recommendsByArtist = new ArrayList<>();
         recommendsByGenre = new ArrayList<>();
         personalRecommends = new ArrayList<>();
+        offset = 0;
         playerStyle = "none";
         recommendStyle = "inline";
+        sortStyle = "block";
         recommendsByArtistStyle = "none";
         recommendsByGenreStyle = "none";
         personalRecommendsStyle = "none";
+        sort = "likes";
         user = SessionBean.getUser();
+        search();
         recommend();
     }
 
@@ -90,30 +96,62 @@ public class MusicBean implements Serializable {
         }
     }
 
-    public void search() {
-        if (query == null) {
-            query = "";
+    public void loadMore() {
+        offset += 10;
+        int sc = songs.size();
+        loadSongsData();
+        if (songs.size() - sc < 10) {
+            sortStyle = "none";
         }
-        String[] queryWords = query.trim().toLowerCase().split(" ");
+    }
+    
+    public void search() {
+        sortStyle = "block";
+        offset = 0;
         songs = new ArrayList<>();
-        List<SongDesc> songDescs = SongDescDM.search(queryWords);
-        if (selectedGenres.length > 0) {
-            for (SongDesc sd : songDescs) {
-                Song song = SongDM.get(sd.getId());
-                for (int idGenre : selectedGenres) {
-                    if (idGenre == song.getIdGenre()) {
-                        songs.add(sd);
-                        break;
-                    }
-                }
-            }
+        loadSongsData();
+    }
+    
+    private void loadSongsData() {
+        List<SongDesc> songDescs = null;
+        String[] queryWords = null;
+        if (query == null || query.trim().length() == 0) {
+            queryWords = new String[0];
         } else {
-            songs = songDescs;
+            queryWords = query.trim().toLowerCase().split(" ");
+        }
+        if (selectedGenres == null) {
+            selectedGenres = new int[0];
+        }
+        if (sort == null) {
+            sort = "likes";
+        }
+        if (sort.equals("recommends")) {
+            songDescs = OracleSongDescDM.getMostRecommended(queryWords, selectedGenres, offset);
+        } else {
+            songDescs = OracleSongDescDM.getMostLiked(queryWords, selectedGenres, offset);
+        }
+        for (int i = 0; i < songDescs.size(); i++) {
+            songs.add(songDescs.get(i));
         }
     }
 
     public String getSongGenre(SongDesc songDesc) {
-        return GenreDM.get(SongDM.get(songDesc.getId()).getIdGenre());
+        if (songDesc == null) {
+            return null;
+        }
+        Song song = SongDM.get(songDesc.getId());
+        if (song == null) {
+            return null;
+        }
+        return GenreDM.get(song.getIdGenre());
+    }
+    
+    public String getCurrentArtist() {
+        if (currentSong == null) {
+            return null;
+        }
+        return currentSong.getNameArtist();
     }
 
     public String getSongAlbum(SongDesc songDesc) {
@@ -289,20 +327,22 @@ public class MusicBean implements Serializable {
     }
 
     public void clear() {
-        songs = SongDescDM.getAll();
+        search();
         recommendsByArtist = new ArrayList<>();
         recommendsByGenre = new ArrayList<>();
         personalRecommends = new ArrayList<>();
+        offset = 0;
         playerStyle = "none";
         recommendStyle = "inline";
+        sortStyle = "block";
         recommendsByArtistStyle = "none";
         recommendsByGenreStyle = "none";
         personalRecommendsStyle = "none";
+        sort = "likes";
         query = null;
         selectedGenres = null;
         currentSong = null;
         recommend();
-        Store.closeStore();
         HiveConnection.close();
     }
 
@@ -380,6 +420,22 @@ public class MusicBean implements Serializable {
 
     public void setUser(Profile user) {
         this.user = user;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getSortStyle() {
+        return sortStyle;
+    }
+
+    public void setSortStyle(String sortStyle) {
+        this.sortStyle = sortStyle;
     }
 
 }

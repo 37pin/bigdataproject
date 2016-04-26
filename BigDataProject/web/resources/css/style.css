@@ -8,7 +8,7 @@ body {
 .headline {
     font-size: 25px;
     font-weight: bold;
-    margin-top: 7%;
+    margin-top: 110px;
     margin-bottom: 10px;
 }
 
@@ -132,7 +132,7 @@ body {
 
 #list-box {
     padding: 15px;
-    width: 65%;
+    width: 55%;
     float: left;
 }
 
