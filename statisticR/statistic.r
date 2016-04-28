@@ -6,18 +6,26 @@ oracleConnection <- dbConnect(oracleDriver, "jdbc:oracle:thin:@bigdatalite.local
 
 #select top likes
 topLikes<- dbGetQuery(oracleConnection, "select s.title, s.nameartist, s.year, c.cn from (select idsong, count(*) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong order by c.cn desc")
+attach(topLikes)
+ggplot(topLikes[1:10,], aes(TITLE, CN, fill = TITLE)) + geom_bar(stat = "identity") + scale_y_continuous("LIKES") + scale_x_discrete(name = "", labels = c()) + ggtitle("Top songs by likes")
 
 #select top likes by artist name
-topArtistNameByLikes <- dbGetQuery(oracleConnection, "select s.nameartist, s.title, s.year, c.cn from (select idsong, count(*) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong and s.nameartist like '%Toussaint Morrison%' order by c.cn desc")
+topArtistNameByLikes <- dbGetQuery(oracleConnection, "select s.nameartist, s.title, s.year, c.cn from (select idsong, count(*) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong and s.nameartist like '%The Polish Ambassador%' order by c.cn desc")
+attach(topArtistNameByLikes)
+ggplot(topArtistNameByLikes, aes(TITLE, CN, fill = TITLE)) + geom_bar(stat = "identity") + scale_y_continuous("LIKES") + scale_x_discrete(name = "", labels = c()) + ggtitle("Top songs for artist by likes")
 
 #select top artist by likes
 topArtistByLikes<- dbGetQuery(oracleConnection, "select distinct s.nameartist, c.cn from (select idsong, count(*) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong order by c.cn desc")
+attach(topArtistByLikes)
+ggplot(topArtistByLikes, aes(NAMEARTIST, CN, fill = NAMEARTIST)) + geom_bar(stat = "identity") + scale_y_continuous("LIKES") + scale_x_discrete(name = "", labels = c()) + ggtitle("Top artists by likes")
 
 #select top likes by genre
 topLikesByGenres <- dbGetQuery(oracleConnection, "select sd.nameartist, sd.title, sd.year, c.cn from genres_hive g, songs_hive s, songsdesc_hive sd, (select idsong, count(*) cn from likes_hive group by idsong) c where g.idgenre=s.idgenre and s.idsong=sd.idsong and g.title like '%RnB%' and sd.idsong=c.idsong order by c.cn desc")
 
 #select top active users
 topActiveUsers <- dbGetQuery(oracleConnection, "select p.email, p.name, p.surname, sd.likes, sd.recommends from profiles_hive p, (select email, count(*)+sum(recommend) cn, count(*) likes, sum(recommend) recommends from likes_hive group by email) sd where p.email=sd.email order by sd.cn desc")
+attach(topActiveUsers)
+ggplot(topActiveUsers, aes(EMAIL, CN, fill = EMAIL)) + geom_bar(stat = "identity") + scale_y_continuous("LIKES") + scale_x_discrete(name = "", labels = c()) + ggtitle("The most active users")
 
 #select top recommends
 topRecommends<- dbGetQuery(oracleConnection, "select s.title, s.nameartist, s.year, c.cn from (select idsong, sum(recommend) cn from likes_hive group by idsong) c, songsdesc_hive s where c.idsong=s.idsong order by c.cn desc")
@@ -63,17 +71,33 @@ plotcp(fit)
 printcp(fit)
 plot(fit, uniform=TRUE, main="tree")
 
-allSongsLikes_E <- dbGetQuery(oracleConnection, "select s.year, s.gender, s.idsong, s.lk from (select p.email, to_number(substr(p.birthday, -4, 4)) year, decode(p.gender, 1, 'M', 2, 'F') gender, s.idsong, decode(l.RECOMMEND, null, 'N', 'Y') lk from profiles_hive p, SONGS_HIVE s, genres_hive g, LIKES_HIVE l where s.IDGENRE=g.IDGENRE and l.IDSONG(+)=s.IDSONG and p.EMAIL=l.email(+)) s where s.email in (select DISTINCT EMAIL from LIKES_HIVE)")
+allSongsLikes_E <- dbGetQuery(oracleConnection, "select s.year, s.gender, s.idsong, s.lk 
+	from 
+		(select 
+			p.email, to_number(substr(p.birthday, -4, 4)) year, 
+			decode(p.gender, 1, 'M', 2, 'F') gender, s.idsong, 
+			decode(l.RECOMMEND, null, 'N', 'Y') lk 
+		from 
+			profiles_hive p, SONGS_HIVE s, genres_hive g, LIKES_HIVE l 
+		where 
+			s.IDGENRE=g.IDGENRE and l.IDSONG(+)=s.IDSONG and p.EMAIL=l.email(+)) s 
+	where s.email in (select DISTINCT EMAIL from LIKES_HIVE)")
 
 tree <- rpart(LK~., allSongsLikes_E)
 tree
 plot(tree)
 text(tree, pretty=0)
 
-allSongsLikes <- dbGetQuery(oracleConnection, "select s.email, s.year, s.gender, s.idsong from (select p.email, to_number(substr(p.birthday, -4, 4)) year, decode(p.gender, 1, 'M', 2, 'F') gender, s.idsong from profiles_hive p, SONGS_HIVE s) s")
+allSongsLikes <- dbGetQuery(oracleConnection, "select s.email, s.year, s.gender, s.idsong 
+	from 
+		(select 
+			p.email, to_number(substr(p.birthday, -4, 4)) year, 
+			decode(p.gender, 1, 'M', 2, 'F') gender, s.idsong 
+		from 
+			profiles_hive p, SONGS_HIVE s) s")
 
-prediction <- predict(tree, allSongsLikes)
-table(prediction)
+prediction <- predict(tree, allSongsLikes, type="class")
+table(prediction, allSongsLikes_E$LK)
 prediction
 View(prediction)
 answerLikes <- data.frame(email = allSongsLikes$EMAIL, idsong = allSongsLikes$IDSONG, probability = prediction[,'Y'])
@@ -95,8 +119,8 @@ hiveConnection <- dbConnect(hiveDriver, "jdbc:hive2://bigdatalite.localdomain:10
 
 dbSendUpdate(hiveConnection, 'drop table predictions')
 dbSendUpdate(hiveConnection, 'create table predictions(email string, idsong string, probability double)')
-for (i in 1:nrow(answerLikesTest)) {
-    row <- answerLikesTest[i,]
+for (i in 1:nrow(answerLikes)) {
+    row <- answerLikes[i,]
     dbSendUpdate(hiveConnection, "insert into predictions values (?, ?, ?)", row[,1], row[,2], row[,3])
 }
 #dbDisconnect(hiveConnection)

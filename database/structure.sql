@@ -139,6 +139,17 @@ put table -name likes -json '{"email":"user1", "idsong":"K0YTJY260D", "recommend
 put table -name likes -json '{"email":"user1", "idsong":"6JACJ1RDXF", "recommend":0}'
 put table -name likes -json '{"email":"user1", "idsong":"2L30CSF091", "recommend":0}'
 put table -name likes -json '{"email":"user1", "idsong":"J7KANYSBRF", "recommend":0}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"6JACJ1RDXF", "recommend":0}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"6JACJ1RDXF", "recommend":1}'
+put table -name likes -json '{"email":"n.krivosheev@gmail.com", "idsong":"6JACJ1RDXF", "recommend":0}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"K0YTJY260D", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"K0YTJY260D", "recommend":0}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"L9EP65P6XW", "recommend":1}'
+put table -name likes -json '{"email":"a.bardin@gmail.com", "idsong":"2L30CSF091", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"2L30CSF091", "recommend":0}'
+put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"2L30CSF091", "recommend":0}'
+put table -name likes -json '{"email":"k.zaharova@gmail.com", "idsong":"2L30CSF091", "recommend":1}'
+put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"3V66999M5O", "recommend":1}'
 
 put table -name comments -json '{"idcomment":1," idsong":"EYS7NQDOS3", "email":"n.chernyshov@gmail.com", "commentbody":"Very good!", "commentdate":"18/03/2016"}'
 
@@ -347,7 +358,7 @@ connect system/welcome1
 CREATE OR REPLACE DIRECTORY ORACLE_BIGDATA_CONFIG AS '/u01/bigdatasql_config';
 CREATE OR REPLACE DIRECTORY "ORA_BIGDATA_CL_bigdatalite" AS '';
 
-CREATE TABLE profiles_hive (
+create table profiles_hive (
 	email varchar2(255),
 	name varchar2(40),
 	surname varchar2(40),
@@ -355,150 +366,150 @@ CREATE TABLE profiles_hive (
 	gender number(1),
 	pass varchar2(255)
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.profiles
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE groups_hive (
+create table groups_hive (
 	idgroup int,
 	title varchar2(255)
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.groups
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE ptog_hive (
+create table ptog_hive (
 	email varchar2(255),
 	idgroup int
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.ptog
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE likes_hive (
+create table likes_hive (
 	email varchar2(255),
 	idsong varchar2(255),
 	recommend int
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.likes_nosql
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE comments_hive (
+create table comments_hive (
 	idcomment int,
 	idsong varchar2(255),
 	email varchar2(255),
 	commentbody varchar2(255),
 	commentdate varchar2(255)
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.comments_nosql
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE genres_hive (
+create table genres_hive (
 	idgenre int,
 	title varchar2(255)
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.genres_nosql
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE artists_hive (
+create table artists_hive (
 	idartist int,
 	name varchar2(255)
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.artists_nosql
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE albums_hive (
+create table albums_hive (
 	idalbum int,
 	title varchar2(255)
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.albums_nosql
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE songs_hive (
+create table songs_hive (
 	idsong varchar2(255),
 	idalbum int,
 	idgenre int,
 	idartist int
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.songs_nosql
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
-CREATE TABLE songsdesc_hive (
+create table songsdesc_hive (
 	idsong varchar2(255),
 	namefile varchar2(255),
 	nameartist varchar2(255),
 	title varchar2(255),
 	year int
 )
-ORGANIZATION EXTERNAL (
-	TYPE ORACLE_HIVE
-	DEFAULT DIRECTORY ORACLE_BIGDATA_CONFIG
-	ACCESS PARAMETERS
+organization external (
+	type oracle_hive
+	default directory oracle_bigdata_config
+	access parameters
 	(
 		com.oracle.bigdata.tablename=default.songsdesc_hdfs
 	)
 )
-REJECT LIMIT UNLIMITED;
+reject limit unlimited;
 
 exit
 
