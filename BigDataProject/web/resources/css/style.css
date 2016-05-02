@@ -20,7 +20,7 @@ body {
 }
 
 .search {
-    width: 555px;
+    width: 500px;
     margin: 0 0 0 5px;
     border-right: 0;
 }
@@ -31,9 +31,14 @@ body {
 }
 
 .input-box {
-    height: 70px;
-    width: 100%;
+    width: 600px;
     height: 30px;
+}
+
+.genres-box {
+    width: 600px;
+    height: 30px;
+    margin-bottom: 10px;
 }
 
 .action,
@@ -132,14 +137,14 @@ body {
 
 #list-box {
     padding: 15px;
-    width: 55%;
+    width: 40%;
     float: left;
 }
 
 #right {
     float: right;
-    width: 380px;
-    margin: 15px 43px 0 0;
+    width: 320px;
+    margin: 25px 10px 0 0;
     height: 300px;
     overflow-y: auto;
 }
@@ -150,9 +155,9 @@ body {
 }
 
 #fixed-part {
-    width: 380px;
+    width: 350px;
     position: fixed;
-    right: 50px;
+    right: 10px;
     bottom: 0;
 }
 
@@ -175,7 +180,7 @@ body {
 }
 
 .truncate {
-    width: 565px;
+    width: 500px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

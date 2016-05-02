@@ -132,7 +132,7 @@
                         <h:selectOneRadio required="true" value="#{musicBean.sort}">
                             <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
                             <f:selectItem itemValue="likes" itemLabel="Top likes"/>
-                            <f:selectItem itemValue="recommends" itemLabel="Top recommendations"/>
+                            <f:selectItem itemValue="recommends" itemLabel="Top recommends"/>
                         </h:selectOneRadio>
                     </div>
                     <div class="input-box">
@@ -141,7 +141,7 @@
                             <f:ajax execute="@form" render=":songslist" />
                         </h:commandButton>
                     </div>
-                    <div>
+                    <div class="genres-box">
                         <h:selectManyCheckbox value="#{musicBean.selectedGenres}">
                             <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
                             <f:selectItems value="#{musicBean.genres}"/>

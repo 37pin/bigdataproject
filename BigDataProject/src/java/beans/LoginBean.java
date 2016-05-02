@@ -19,9 +19,10 @@ public class LoginBean implements Serializable {
     private String password;
     private String message;
     
-    public LoginBean() {
+    /*public LoginBean() {
         OracleConnection.getConnection();
-    }
+        HiveConnection.getStatement();
+    }*/
 
     public String validate() {
         String trueEmail = null;
