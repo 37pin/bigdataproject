@@ -1,5 +1,6 @@
 package beans;
 
+import beans.util.Configuration;
 import db.hive.HiveConnection;
 import db.hive.PredictionDM;
 import db.hive.SongDescDM;
@@ -60,7 +61,7 @@ public class MusicBean implements Serializable {
         recommendsByArtistStyle = "none";
         recommendsByGenreStyle = "none";
         personalRecommendsStyle = "none";
-        sort = "likes";
+        sort = "all";
         user = SessionBean.getUser();
         search();
         recommend();
@@ -97,7 +98,7 @@ public class MusicBean implements Serializable {
     }
 
     public void loadMore() {
-        offset += 10;
+        offset += Configuration.LOAD_MORE_SONGS_CNT;
         int sc = songs.size();
         loadSongsData();
         if (songs.size() - sc < 10) {
@@ -124,9 +125,11 @@ public class MusicBean implements Serializable {
             selectedGenres = new int[0];
         }
         if (sort == null) {
-            sort = "likes";
+            sort = "all";
         }
-        if (sort.equals("recommends")) {
+        if (sort.equals("all")) {
+            songDescs = OracleSongDescDM.getAll(queryWords, selectedGenres, offset);
+        } else if (sort.equals("recommends")) {
             songDescs = OracleSongDescDM.getMostRecommended(queryWords, selectedGenres, offset);
         } else {
             songDescs = OracleSongDescDM.getMostLiked(queryWords, selectedGenres, offset);
@@ -190,7 +193,7 @@ public class MusicBean implements Serializable {
     }
 
     public String getIP() {
-        return SongDescDM.IP;
+        return Configuration.IP;
     }
 
     public void changeMusic(SongDesc songDesc) {
@@ -216,7 +219,7 @@ public class MusicBean implements Serializable {
                     recommendsByArtistMap.put(idSong, LikeDM.getLikesCount(idSong));
                 }
             }
-            recommendsByArtistMap = sortHashMapByValues(recommendsByArtistMap, 3);
+            recommendsByArtistMap = sortHashMapByValues(recommendsByArtistMap, Configuration.RECOMMENDS_BY_ARTIST_CNT);
             for (Entry<String, Integer> entry : recommendsByArtistMap.entrySet()) {
                 localRecommends.add(entry.getKey());
             }
@@ -227,14 +230,14 @@ public class MusicBean implements Serializable {
                     recommendsByGenreMap.put(idSong, LikeDM.getLikesCount(idSong));
                 }
             }
-            recommendsByGenreMap = sortHashMapByValues(recommendsByGenreMap, 4);
+            recommendsByGenreMap = sortHashMapByValues(recommendsByGenreMap, Configuration.RECOMMENDS_BY_GENRE_CNT);
             for (Entry<String, Integer> entry : recommendsByGenreMap.entrySet()) {
                 localRecommends.add(entry.getKey());
             }
 
             cnt += recommendsByArtistMap.size() + recommendsByGenreMap.size();
         }
-        cnt = 10 - cnt;
+        cnt = Configuration.MAX_RECOMMENDS - cnt;
         List<String> predictions = PredictionDM.get(user.getEmail());
         int predictionCnt = 0;
         for (String idSong : predictions) {
@@ -338,7 +341,7 @@ public class MusicBean implements Serializable {
         recommendsByArtistStyle = "none";
         recommendsByGenreStyle = "none";
         personalRecommendsStyle = "none";
-        sort = "likes";
+        sort = "all";
         query = null;
         selectedGenres = null;
         currentSong = null;

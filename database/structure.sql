@@ -1,6 +1,5 @@
-NoSQL
+/* NoSQL
 	likes(email, idsong, recommend)
-	comments(idcomment, idsong, email, commentbody, commentdate)
 	genres(idgenre, title)
 	artists(idartist, name)
 	albums(idalbum, title)
@@ -9,15 +8,13 @@ NoSQL
 HIVE
 	profiles(email, name, surname, birthday, gender, pass)
 	predictions(email, idsong, probability)
-	groups(idgroup, title)
-    ptog(email, idgroup)
 	external tables
 
 HDFS
 	songsdesc(idsong, namefile, nameartist, title, year)
 
 SQL
-	external tables
+	external tables */
 
 -- HDFS
 hdfs dfs -mkdir /music
@@ -30,7 +27,6 @@ java -jar $KVHOME/lib/kvstore.jar runadmin -port 5000 -host bigdatalite.localdom
 
 connect store -name kvstore
 execute 'create table likes(email string, idsong string, recommend integer, primary key(shard(email), idsong))'
-execute 'create table comments(idcomment integer, idsong string, email string, commentbody string, commentdate string, primary key(idcomment))'
 execute 'create table genres(idgenre integer, title string, primary key(idgenre))'
 execute 'create table artists(idartist integer, name string, primary key(idartist))'
 execute 'create table albums(idalbum integer, title string, primary key(idalbum))'
@@ -151,8 +147,6 @@ put table -name likes -json '{"email":"n.chernyshov@gmail.com", "idsong":"2L30CS
 put table -name likes -json '{"email":"k.zaharova@gmail.com", "idsong":"2L30CSF091", "recommend":1}'
 put table -name likes -json '{"email":"i.ivanov@gmail.com", "idsong":"3V66999M5O", "recommend":1}'
 
-put table -name comments -json '{"idcomment":1," idsong":"EYS7NQDOS3", "email":"n.chernyshov@gmail.com", "commentbody":"Very good!", "commentdate":"18/03/2016"}'
-
 put table -name genres -json '{"idgenre":1, "title":"RnB"}'
 put table -name genres -json '{"idgenre":2, "title":"Rock"}'
 put table -name genres -json '{"idgenre":3, "title":"Rap"}'
@@ -188,7 +182,7 @@ put table -name artists -json '{"idartist":22, "name":"ZoeLeelA"}'
 put table -name albums -json '{"idalbum":1, "title":"Gone Already - Single"}'
 put table -name albums -json '{"idalbum":2, "title":"Cash"}'
 put table -name albums -json '{"idalbum":3, "title":"Silent Album"}'
-put table -name albums -json '{"idalbum":4, "title":"Electroalbum"}'
+put table -name albums -json '{"idalbum":4, "title":"Electro album"}'
 put table -name albums -json '{"idalbum":5, "title":"Different music"}'
 
 put table -name songs -json '{"idsong":"70GKB82HGS", "idalbum":1, "idgenre":1, "idartist":1}'
@@ -268,10 +262,7 @@ insert into profiles values('k.zaripov@gmail.com', 'Kristina', 'Zaripov', '06/11
 insert into profiles values('e.ivanova@gmail.com', 'Elena', 'Ivanova', '21/04/1997', 2, 'qwerty');
 insert into profiles values('v.gavrilov@gmail.com', 'Viktor', 'Gavrilov', '12/07/1985', 1, 'user');
 insert into profiles values('o.kulikov@gmail.com', 'Oleg', 'Kulikov', '31/05/1988', 1, 'admin');
-insert into profiles values('test@test.com', 'Test', 'Test', '14/05/1993', 1, 'test');
-
-create table groups(idgroup int, title string);
-create table ptog(email string, idgroup string);
+insert into profiles values('test@test.com', 'Name', 'Surname', '14/05/1993', 1, 'test');
 
 create external table likes_nosql (
 email string,
@@ -283,19 +274,6 @@ tblproperties
 "oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
 "oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
 "oracle.kv.tableName" = "likes");
-
-create external table comments_nosql (
-idcomment int,
-idsong string, 
-email string,
-commentbody string,
-commentdate string)
-stored by 'oracle.kv.hadoop.hive.table.TableStorageHandler' 
-tblproperties 
-("oracle.kv.kvstore" = "kvstore", 
-"oracle.kv.hosts" = "bigdatalite.localdomain:5000", 
-"oracle.kv.hadoop.hosts" = "bigdatalite.localdomain/127.0.0.1",
-"oracle.kv.tableName" = "comments");
 
 create external table genres_nosql (
 idgenre int,
@@ -376,34 +354,6 @@ organization external (
 )
 reject limit unlimited;
 
-create table groups_hive (
-	idgroup int,
-	title varchar2(255)
-)
-organization external (
-	type oracle_hive
-	default directory oracle_bigdata_config
-	access parameters
-	(
-		com.oracle.bigdata.tablename=default.groups
-	)
-)
-reject limit unlimited;
-
-create table ptog_hive (
-	email varchar2(255),
-	idgroup int
-)
-organization external (
-	type oracle_hive
-	default directory oracle_bigdata_config
-	access parameters
-	(
-		com.oracle.bigdata.tablename=default.ptog
-	)
-)
-reject limit unlimited;
-
 create table likes_hive (
 	email varchar2(255),
 	idsong varchar2(255),
@@ -415,23 +365,6 @@ organization external (
 	access parameters
 	(
 		com.oracle.bigdata.tablename=default.likes_nosql
-	)
-)
-reject limit unlimited;
-
-create table comments_hive (
-	idcomment int,
-	idsong varchar2(255),
-	email varchar2(255),
-	commentbody varchar2(255),
-	commentdate varchar2(255)
-)
-organization external (
-	type oracle_hive
-	default directory oracle_bigdata_config
-	access parameters
-	(
-		com.oracle.bigdata.tablename=default.comments_nosql
 	)
 )
 reject limit unlimited;

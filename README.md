@@ -1,2 +1,2 @@
 # bigdataproject
-Big Data project for MBDS
+BigBridge: implementation of the Big Data Oracle approach

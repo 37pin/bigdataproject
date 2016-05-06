@@ -131,6 +131,7 @@
                     <div>
                         <h:selectOneRadio required="true" value="#{musicBean.sort}">
                             <f:ajax event="click" listener="#{musicBean.search}" execute="@form" render=":songslist"/>
+                            <f:selectItem itemValue="all" itemLabel="All songs"/>
                             <f:selectItem itemValue="likes" itemLabel="Top likes"/>
                             <f:selectItem itemValue="recommends" itemLabel="Top recommends"/>
                         </h:selectOneRadio>

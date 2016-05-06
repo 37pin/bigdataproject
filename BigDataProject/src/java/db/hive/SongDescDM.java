@@ -9,9 +9,6 @@ import java.util.List;
 
 public class SongDescDM {
 
-    public static final String IP = // "192.168.206.17";
-                                    "10.154.123.231";
-
     public static SongDesc get(String idSong) {
         SongDesc songDesc = null;
         if (songDesc == null) {

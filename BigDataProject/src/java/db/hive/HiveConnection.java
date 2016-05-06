@@ -25,16 +25,6 @@ public class HiveConnection {
         }
         return statement;
     }
-
-    public static String realEscapeString(String string) {
-        return string.replace('\\', ' ')
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\'", "\\'")
-                .replace("\"", "\\\"")
-                .replace((char) 26, ' ')
-                .replace((char) 0, ' ');
-    }
     
     public static void close() {
         try {

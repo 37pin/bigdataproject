@@ -2,7 +2,6 @@ package beans;
 
 import db.hive.HiveConnection;
 import db.hive.ProfileDM;
-import db.oracle.OracleConnection;
 import entities.Profile;
 import java.io.Serializable;
 import java.security.MessageDigest;
@@ -18,11 +17,6 @@ public class LoginBean implements Serializable {
     private String email;
     private String password;
     private String message;
-    
-    /*public LoginBean() {
-        OracleConnection.getConnection();
-        HiveConnection.getStatement();
-    }*/
 
     public String validate() {
         String trueEmail = null;
