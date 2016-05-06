@@ -136,8 +136,8 @@ cp = c("lib/hive-jdbc.jar",
 hiveDriver <- JDBC("org.apache.hive.jdbc.HiveDriver", "lib/hive-jdbc.jar", identifier.quote="`")
 hiveConnection <- dbConnect(hiveDriver, "jdbc:hive2://bigdatalite.localdomain:10000/", "oracle", "welcome1")
 
-#dbSendUpdate(hiveConnection, 'drop table predictions')
-#dbSendUpdate(hiveConnection, 'create table predictions(email string, idsong string, probability double)')
+dbSendUpdate(hiveConnection, 'drop table predictions')
+dbSendUpdate(hiveConnection, 'create table predictions(email string, idsong string, probability double)')
 predictionsRowsCnt <- nrow(answerLikes)
 for (i in 1:nrow(answerLikes)) {
     row <- answerLikes[i,]
