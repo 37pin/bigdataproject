@@ -1,2 +1,2 @@
 # bigdataproject
-BigBridge: implementation of the Big Data Oracle approach
+BigBridge project: implementation of the Oracle Big Data approach
